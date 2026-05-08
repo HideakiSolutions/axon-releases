@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <!-- Background -->
+  <rect width="900" height="500" fill="#0d1117" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700" fill="#e6edf3" text-anchor="middle">MCP Tools Reference</text>
+  <text x="450" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">15 tools across 4 categories — all accessible via Claude Code MCP integration</text>
+
+  <!-- === ROW 1: Core Context === -->
+  <!-- Category header bar -->
+  <rect x="24" y="78" width="852" height="24" rx="4" fill="#58a6ff" opacity="0.15"/>
+  <rect x="24" y="78" width="4" height="24" rx="2" fill="#58a6ff"/>
+  <text x="36" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#58a6ff" letter-spacing="1">CORE CONTEXT</text>
+
+  <!-- Cell template: x positions for 5 cols: 24, 194, 364, 534, 704 | width=162 -->
+  <!-- Cell 1.1: get_context_capsule -->
+  <rect x="24" y="108" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="24" y="108" width="4" height="90" rx="2" fill="#58a6ff"/>
+  <text x="38" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🔍</text>
+  <text x="62" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_context_capsule</text>
+  <text x="32" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Semantic query → pivot</text>
+  <text x="32" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">files + skeletons. Primary</text>
+  <text x="32" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">entry point.</text>
+  <text x="32" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#58a6ff">query, pivot_files?, budget?</text>
+
+  <!-- Cell 1.2: get_overview -->
+  <rect x="194" y="108" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="194" y="108" width="4" height="90" rx="2" fill="#58a6ff"/>
+  <text x="208" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🗺</text>
+  <text x="232" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_overview</text>
+  <text x="202" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Top files by coupling +</text>
+  <text x="202" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">top referenced symbols.</text>
+  <text x="202" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Use on unknown repos.</text>
+  <text x="202" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#58a6ff">limit?</text>
+
+  <!-- Cell 1.3: get_impact_graph -->
+  <rect x="364" y="108" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="364" y="108" width="4" height="90" rx="2" fill="#58a6ff"/>
+  <text x="378" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">📊</text>
+  <text x="402" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_impact_graph</text>
+  <text x="372" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Which files depend on</text>
+  <text x="372" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">the given files. Use</text>
+  <text x="372" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">before editing.</text>
+  <text x="372" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#58a6ff">files[]</text>
+
+  <!-- Cell 1.4: get_callers -->
+  <rect x="534" y="108" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="534" y="108" width="4" height="90" rx="2" fill="#58a6ff"/>
+  <text x="548" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">📞</text>
+  <text x="572" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_callers</text>
+  <text x="542" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Backward trace: files</text>
+  <text x="542" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">that import the symbol</text>
+  <text x="542" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">definer. Debug/root cause.</text>
+  <text x="542" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#58a6ff">symbol_name, file_path?, limit?</text>
+
+  <!-- Cell 1.5: get_skeleton -->
+  <rect x="704" y="108" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="704" y="108" width="4" height="90" rx="2" fill="#58a6ff"/>
+  <text x="718" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🦴</text>
+  <text x="742" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_skeleton</text>
+  <text x="712" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Signatures only, no</text>
+  <text x="712" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">function bodies. Quick</text>
+  <text x="712" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">structural inspection.</text>
+  <text x="712" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#58a6ff">files[]</text>
+
+  <!-- === ROW 2: Memory & Tests === -->
+  <rect x="24" y="210" width="852" height="24" rx="4" fill="#bc8cff" opacity="0.15"/>
+  <rect x="24" y="210" width="4" height="24" rx="2" fill="#bc8cff"/>
+  <text x="36" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#bc8cff" letter-spacing="1">MEMORY &amp; TESTS</text>
+
+  <!-- Cell 2.1: get_tests_for -->
+  <rect x="24" y="240" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="24" y="240" width="4" height="90" rx="2" fill="#bc8cff"/>
+  <text x="38" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🧪</text>
+  <text x="62" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">get_tests_for</text>
+  <text x="32" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Tests that import the</text>
+  <text x="32" y="294" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">given files. Run before</text>
+  <text x="32" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">merging a PR.</text>
+  <text x="32" y="324" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#bc8cff">files[]</text>
+
+  <!-- Cell 2.2: search_memory -->
+  <rect x="194" y="240" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="194" y="240" width="4" height="90" rx="2" fill="#bc8cff"/>
+  <text x="208" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">💾</text>
+  <text x="232" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">search_memory</text>
+  <text x="202" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Retrieve cross-session</text>
+  <text x="202" y="294" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">saved observations.</text>
+  <text x="202" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Zero re-exploration.</text>
+  <text x="202" y="324" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#bc8cff">query, limit?</text>
+
+  <!-- Cell 2.3: save_observation -->
+  <rect x="364" y="240" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="364" y="240" width="4" height="90" rx="2" fill="#bc8cff"/>
+  <text x="378" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">📝</text>
+  <text x="402" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">save_observation</text>
+  <text x="372" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Persist architectural</text>
+  <text x="372" y="294" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">insights for future</text>
+  <text x="372" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">sessions.</text>
+  <text x="372" y="324" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#bc8cff">content, tags?, file_path?</text>
+
+  <!-- === ROW 3: Index & Advanced === -->
+  <rect x="24" y="342" width="852" height="24" rx="4" fill="#3fb950" opacity="0.15"/>
+  <rect x="24" y="342" width="4" height="24" rx="2" fill="#3fb950"/>
+  <text x="36" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950" letter-spacing="1">INDEX &amp; ADVANCED</text>
+
+  <!-- Cell 3.1: run_pipeline -->
+  <rect x="24" y="372" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="24" y="372" width="4" height="90" rx="2" fill="#3fb950"/>
+  <text x="38" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">⚙️</text>
+  <text x="62" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">run_pipeline</text>
+  <text x="32" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Full re-index. Use only</text>
+  <text x="32" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">if index is stale or</text>
+  <text x="32" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">corrupted.</text>
+  <text x="32" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#3fb950">root?</text>
+
+  <!-- Cell 3.2: index_paths -->
+  <rect x="194" y="372" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="194" y="372" width="4" height="90" rx="2" fill="#3fb950"/>
+  <text x="208" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">📁</text>
+  <text x="232" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">index_paths</text>
+  <text x="202" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Partial re-index of</text>
+  <text x="202" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">specific paths. Faster</text>
+  <text x="202" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">than run_pipeline.</text>
+  <text x="202" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#3fb950">paths[], prune?</text>
+
+  <!-- Cell 3.3: detect_changes -->
+  <rect x="364" y="372" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="364" y="372" width="4" height="90" rx="2" fill="#3fb950"/>
+  <text x="378" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🔄</text>
+  <text x="402" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">detect_changes</text>
+  <text x="372" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Diff index vs filesystem</text>
+  <text x="372" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">to find stale or</text>
+  <text x="372" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">missing entries.</text>
+  <text x="372" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#3fb950">—</text>
+
+  <!-- Cell 3.4: api_impact -->
+  <rect x="534" y="372" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="534" y="372" width="4" height="90" rx="2" fill="#3fb950"/>
+  <text x="548" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">⚡</text>
+  <text x="572" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">api_impact</text>
+  <text x="542" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Impact of API surface</text>
+  <text x="542" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">changes across the</text>
+  <text x="542" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">whole codebase.</text>
+  <text x="542" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#3fb950">files[]</text>
+
+  <!-- Cell 3.5: route_map -->
+  <rect x="704" y="372" width="162" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="704" y="372" width="4" height="90" rx="2" fill="#3fb950"/>
+  <text x="718" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18">🌐</text>
+  <text x="742" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#e6edf3">route_map</text>
+  <text x="712" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">Map HTTP routes to</text>
+  <text x="712" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">handler files for API</text>
+  <text x="712" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e">exploration.</text>
+  <text x="712" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#3fb950">—</text>
+</svg>

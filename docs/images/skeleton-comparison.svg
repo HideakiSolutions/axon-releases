@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420">
+  <!-- Background -->
+  <rect width="900" height="420" fill="#0d1117" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700" fill="#e6edf3" text-anchor="middle">get_skeleton — Token Efficiency</text>
+  <text x="450" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">Signatures only — no function bodies, full structural understanding</text>
+
+  <!-- Left panel: Full File -->
+  <rect x="24" y="80" width="370" height="316" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+  <!-- Red top bar -->
+  <rect x="24" y="80" width="370" height="32" rx="8" fill="#f85149" opacity="0.15"/>
+  <rect x="24" y="96" width="370" height="16" fill="#f85149" opacity="0.15"/>
+  <text x="34" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#f85149">Full File</text>
+  <text x="340" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f85149" text-anchor="end">847 tokens</text>
+
+  <!-- Code content left panel -->
+  <text x="34" y="128" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">class <tspan fill="#58a6ff">IndexManager</tspan>:</text>
+  <text x="34" y="144" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">__init__</tspan>(self, db_path: <tspan fill="#f0883e">str</tspan>):</text>
+  <text x="34" y="160" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self.db = <tspan fill="#58a6ff">DuckDB</tspan>(db_path)</text>
+  <text x="34" y="176" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self.cache = {}</text>
+  <text x="34" y="192" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self._lock = threading.<tspan fill="#58a6ff">Lock</tspan>()</text>
+  <text x="34" y="208" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681"> </text>
+  <text x="34" y="224" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">index_file</tspan>(self, path: <tspan fill="#f0883e">str</tspan>) -&gt; <tspan fill="#f0883e">int</tspan>:</text>
+  <text x="34" y="240" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681">        """Index a single file..."""</text>
+  <text x="34" y="256" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        with self._lock:</text>
+  <text x="34" y="272" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">            content = open(path).<tspan fill="#3fb950">read</tspan>()</text>
+  <text x="34" y="288" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">            symbols = <tspan fill="#3fb950">parse_symbols</tspan>(content)</text>
+  <text x="34" y="304" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681">            # ... 40 more lines</text>
+  <text x="34" y="320" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">            return <tspan fill="#3fb950">len</tspan>(symbols)</text>
+  <text x="34" y="336" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681"> </text>
+  <text x="34" y="352" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">search</tspan>(self, query: <tspan fill="#f0883e">str</tspan>,</text>
+  <text x="34" y="368" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">               limit: <tspan fill="#f0883e">int</tspan> = 10) -&gt; <tspan fill="#f0883e">list</tspan>:</text>
+  <text x="34" y="384" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681">        # ... 8 more methods</text>
+
+  <!-- Right panel: Skeleton -->
+  <rect x="506" y="80" width="370" height="316" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+  <!-- Green top bar -->
+  <rect x="506" y="80" width="370" height="32" rx="8" fill="#3fb950" opacity="0.15"/>
+  <rect x="506" y="96" width="370" height="16" fill="#3fb950" opacity="0.15"/>
+  <text x="516" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950">Skeleton</text>
+  <text x="822" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#3fb950" text-anchor="end">89 tokens</text>
+
+  <!-- Code content right panel -->
+  <text x="516" y="128" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">class <tspan fill="#58a6ff">IndexManager</tspan>:</text>
+  <text x="516" y="144" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">__init__</tspan>(</text>
+  <text x="516" y="160" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self, db_path: <tspan fill="#f0883e">str</tspan>) -&gt; <tspan fill="#f0883e">None</tspan>: ...</text>
+  <text x="516" y="176" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681"> </text>
+  <text x="516" y="192" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">index_file</tspan>(</text>
+  <text x="516" y="208" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self, path: <tspan fill="#f0883e">str</tspan>)</text>
+  <text x="516" y="224" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        -&gt; <tspan fill="#f0883e">int</tspan>: ...</text>
+  <text x="516" y="240" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681"> </text>
+  <text x="516" y="256" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">    def <tspan fill="#3fb950">search</tspan>(</text>
+  <text x="516" y="272" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        self, query: <tspan fill="#f0883e">str</tspan>,</text>
+  <text x="516" y="288" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#8b949e">        limit: <tspan fill="#f0883e">int</tspan> = 10) -&gt; <tspan fill="#f0883e">list</tspan>: ...</text>
+  <text x="516" y="304" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681"> </text>
+  <text x="516" y="320" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="10.5" fill="#6e7681">    # 8 more method signatures...</text>
+
+  <!-- Center arrow -->
+  <!-- Arrow background pill -->
+  <rect x="402" y="220" width="96" height="40" rx="20" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <!-- Arrow line -->
+  <line x1="418" y1="240" x2="468" y2="240" stroke="#58a6ff" stroke-width="2"/>
+  <!-- Arrow head -->
+  <polygon points="468,233 482,240 468,247" fill="#58a6ff"/>
+  <!-- Label -->
+  <text x="450" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950" text-anchor="middle">−89% tokens</text>
+</svg>

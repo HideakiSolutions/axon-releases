@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
+  <!-- Background -->
+  <rect width="900" height="380" fill="#0d1117" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700" fill="#e6edf3" text-anchor="middle">Installation Paths</text>
+  <text x="450" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">Choose the path for your OS — all result in the same configured environment</text>
+
+  <!-- ====== Column 1: macOS / Linux (Homebrew) ====== -->
+  <!-- Header -->
+  <rect x="24" y="78" width="264" height="36" rx="6" fill="#3fb950" opacity="0.2"/>
+  <rect x="24" y="78" width="264" height="36" rx="6" fill="none" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="156" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#3fb950" text-anchor="middle">macOS / Linux (Homebrew)</text>
+
+  <!-- Step 1 -->
+  <rect x="24" y="130" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="54" cy="154" r="14" fill="#3fb950" opacity="0.2"/>
+  <circle cx="54" cy="154" r="14" fill="none" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="54" y="159" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950" text-anchor="middle">1</text>
+  <text x="76" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">brew tap axon/tap</text>
+  <text x="76" y="166" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Add the Homebrew tap</text>
+
+  <!-- Arrow -->
+  <line x1="156" y1="178" x2="156" y2="196" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="150,196 156,208 162,196" fill="#3fb950"/>
+
+  <!-- Step 2 -->
+  <rect x="24" y="210" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="54" cy="234" r="14" fill="#3fb950" opacity="0.2"/>
+  <circle cx="54" cy="234" r="14" fill="none" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="54" y="239" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950" text-anchor="middle">2</text>
+  <text x="76" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">brew install axon</text>
+  <text x="76" y="246" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Install binary + deps</text>
+
+  <!-- Arrow -->
+  <line x1="156" y1="258" x2="156" y2="276" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="150,276 156,288 162,276" fill="#3fb950"/>
+
+  <!-- Step 3 -->
+  <rect x="24" y="290" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="54" cy="314" r="14" fill="#3fb950" opacity="0.2"/>
+  <circle cx="54" cy="314" r="14" fill="none" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="54" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3fb950" text-anchor="middle">3</text>
+  <text x="76" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">axon-setup</text>
+  <text x="76" y="326" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Configure hooks + MCP</text>
+
+  <!-- Done badge -->
+  <rect x="24" y="350" width="264" height="16" rx="4" fill="#3fb950" opacity="0.15"/>
+  <text x="156" y="362" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#3fb950" text-anchor="middle">✓ Done — ~2 min</text>
+
+  <!-- ====== Column 2: Direct Download ====== -->
+  <rect x="318" y="78" width="264" height="36" rx="6" fill="#58a6ff" opacity="0.2"/>
+  <rect x="318" y="78" width="264" height="36" rx="6" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="450" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#58a6ff" text-anchor="middle">Direct Download</text>
+
+  <!-- Step 1 -->
+  <rect x="318" y="130" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="348" cy="154" r="14" fill="#58a6ff" opacity="0.2"/>
+  <circle cx="348" cy="154" r="14" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="348" y="159" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#58a6ff" text-anchor="middle">1</text>
+  <text x="370" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">Download tarball</text>
+  <text x="370" y="166" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">From GitHub Releases page</text>
+
+  <line x1="450" y1="178" x2="450" y2="196" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="444,196 450,208 456,196" fill="#58a6ff"/>
+
+  <!-- Step 2 -->
+  <rect x="318" y="210" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="348" cy="234" r="14" fill="#58a6ff" opacity="0.2"/>
+  <circle cx="348" cy="234" r="14" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="348" y="239" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#58a6ff" text-anchor="middle">2</text>
+  <text x="370" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">tar xzf axon-*.tar.gz</text>
+  <text x="370" y="246" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Extract archive</text>
+
+  <line x1="450" y1="258" x2="450" y2="276" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="444,276 450,288 456,276" fill="#58a6ff"/>
+
+  <!-- Step 3 -->
+  <rect x="318" y="290" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="348" cy="314" r="14" fill="#58a6ff" opacity="0.2"/>
+  <circle cx="348" cy="314" r="14" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="348" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#58a6ff" text-anchor="middle">3</text>
+  <text x="370" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">./install.sh</text>
+  <text x="370" y="326" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Installs + runs axon-setup</text>
+
+  <rect x="318" y="350" width="264" height="16" rx="4" fill="#58a6ff" opacity="0.15"/>
+  <text x="450" y="362" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#58a6ff" text-anchor="middle">✓ Done — ~3 min</text>
+
+  <!-- ====== Column 3: Windows ====== -->
+  <rect x="612" y="78" width="264" height="36" rx="6" fill="#bc8cff" opacity="0.2"/>
+  <rect x="612" y="78" width="264" height="36" rx="6" fill="none" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="744" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#bc8cff" text-anchor="middle">Windows</text>
+
+  <!-- Step 1 -->
+  <rect x="612" y="130" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="642" cy="154" r="14" fill="#bc8cff" opacity="0.2"/>
+  <circle cx="642" cy="154" r="14" fill="none" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="642" y="159" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#bc8cff" text-anchor="middle">1</text>
+  <text x="664" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">Download zip</text>
+  <text x="664" y="166" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">axon-windows-x64.zip</text>
+
+  <line x1="744" y1="178" x2="744" y2="196" stroke="#bc8cff" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="738,196 744,208 750,196" fill="#bc8cff"/>
+
+  <!-- Step 2 -->
+  <rect x="612" y="210" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="642" cy="234" r="14" fill="#bc8cff" opacity="0.2"/>
+  <circle cx="642" cy="234" r="14" fill="none" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="642" y="239" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#bc8cff" text-anchor="middle">2</text>
+  <text x="664" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">Expand-Archive .\axon.zip</text>
+  <text x="664" y="246" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Extract in PowerShell</text>
+
+  <line x1="744" y1="258" x2="744" y2="276" stroke="#bc8cff" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <polygon points="738,276 744,288 750,276" fill="#bc8cff"/>
+
+  <!-- Step 3 -->
+  <rect x="612" y="290" width="264" height="48" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <circle cx="642" cy="314" r="14" fill="#bc8cff" opacity="0.2"/>
+  <circle cx="642" cy="314" r="14" fill="none" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="642" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#bc8cff" text-anchor="middle">3</text>
+  <text x="664" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e6edf3">.\install.ps1</text>
+  <text x="664" y="326" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e">Run as Administrator</text>
+
+  <rect x="612" y="350" width="264" height="16" rx="4" fill="#bc8cff" opacity="0.15"/>
+  <text x="744" y="362" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#bc8cff" text-anchor="middle">✓ Done — ~3 min</text>
+
+  <!-- Footer note -->
+  <text x="450" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">All paths install: axon binary + axon-setup + Claude Code hooks + MCP server configuration</text>
+</svg>

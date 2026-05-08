@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
+  <!-- Background -->
+  <rect width="900" height="380" fill="#0d1117" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700" fill="#e6edf3" text-anchor="middle">Token Reduction vs. Direct File Reading</text>
+
+  <!-- Subtitle -->
+  <text x="450" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">Measured across representative codebases using get_context_capsule</text>
+
+  <!-- Chart area: x=220, y=90, w=560, h=220 -->
+
+  <!-- Grid lines -->
+  <line x1="220" y1="90" x2="220" y2="310" stroke="#30363d" stroke-width="1"/>
+  <line x1="220" y1="310" x2="780" y2="310" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Grid verticals at 25%, 50%, 75%, 100% -->
+  <line x1="360" y1="90" x2="360" y2="310" stroke="#30363d" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="500" y1="90" x2="500" y2="310" stroke="#30363d" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="640" y1="90" x2="640" y2="310" stroke="#30363d" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="780" y1="90" x2="780" y2="310" stroke="#30363d" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+  <!-- Grid labels -->
+  <text x="360" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">25%</text>
+  <text x="500" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">50%</text>
+  <text x="640" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">75%</text>
+  <text x="780" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">100%</text>
+
+  <!-- Bar 1: TypeScript monorepo — 94% → width = 0.94 * 560 = 526.4 -->
+  <text x="215" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3" text-anchor="end">TypeScript monorepo</text>
+  <text x="215" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="end">(12 files)</text>
+  <rect x="222" y="104" width="526" height="32" rx="4" fill="#3fb950" opacity="0.85"/>
+  <rect x="222" y="104" width="526" height="32" rx="4" fill="url(#green-fade)"/>
+  <text x="756" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#3fb950" text-anchor="start">94%</text>
+
+  <!-- Bar 2: Python backend — 89% → 498.4 -->
+  <text x="215" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3" text-anchor="end">Python backend</text>
+  <text x="215" y="176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="end">(8 files)</text>
+  <rect x="222" y="148" width="498" height="32" rx="4" fill="#3fb950" opacity="0.85"/>
+  <text x="728" y="169" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#3fb950" text-anchor="start">89%</text>
+
+  <!-- Bar 3: Rust crate — 82% → 459.2 -->
+  <text x="215" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3" text-anchor="end">Rust crate</text>
+  <text x="215" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="end">(6 files)</text>
+  <rect x="222" y="192" width="460" height="32" rx="4" fill="#58a6ff" opacity="0.85"/>
+  <text x="690" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#58a6ff" text-anchor="start">82%</text>
+
+  <!-- Bar 4: Go service — 78% → 436.8 -->
+  <text x="215" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3" text-anchor="end">Go service</text>
+  <text x="215" y="264" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="end">(10 files)</text>
+  <rect x="222" y="236" width="437" height="32" rx="4" fill="#58a6ff" opacity="0.85"/>
+  <text x="667" y="257" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#58a6ff" text-anchor="start">78%</text>
+
+  <!-- Bar 5: C++ library — 76% → 425.6 -->
+  <text x="215" y="294" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3" text-anchor="end">C++ library</text>
+  <text x="215" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="end">(4 files)</text>
+  <rect x="222" y="280" width="426" height="28" rx="4" fill="#f0883e" opacity="0.85"/>
+  <text x="656" y="299" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#f0883e" text-anchor="start">76%</text>
+
+  <!-- Average annotation -->
+  <rect x="180" y="340" width="540" height="28" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="450" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">Average: <tspan font-weight="700" fill="#3fb950">84% fewer tokens</tspan> — same or better context quality</text>
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="green-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="70%" stop-color="#3fb950" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#3fb950" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+</svg>

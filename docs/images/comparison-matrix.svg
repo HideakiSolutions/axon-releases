@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400">
+  <!-- Background -->
+  <rect width="900" height="400" fill="#0d1117" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700" fill="#e6edf3" text-anchor="middle">Tool Comparison</text>
+  <text x="450" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#8b949e" text-anchor="middle">axon vs. traditional code exploration tools</text>
+
+  <!-- Table layout: x=24, cols at 24+, row height=32 -->
+  <!-- Col widths: Feature=260, axon=130, grep=130, ctags=130, LSP=130 -->
+  <!-- Col x starts: 24, 284, 414, 544, 674 | right edge=804 + 24pad = 828 -->
+
+  <!-- Header row -->
+  <rect x="24" y="78" width="852" height="36" rx="6" fill="#161b22"/>
+  <rect x="24" y="78" width="852" height="36" rx="0" fill="none" stroke="#30363d" stroke-width="1"/>
+  <rect x="24" y="78" width="852" height="36" rx="6" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <text x="148" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#8b949e" text-anchor="middle">Feature</text>
+
+  <!-- axon col header -->
+  <rect x="284" y="78" width="130" height="36" fill="#58a6ff" opacity="0.15" rx="0"/>
+  <text x="349" y="97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#58a6ff" text-anchor="middle">axon</text>
+  <text x="349" y="111" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#58a6ff" text-anchor="middle">MCP Context Engine</text>
+
+  <text x="479" y="97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#8b949e" text-anchor="middle">grep / rg</text>
+  <text x="479" y="111" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">Text search</text>
+
+  <text x="609" y="97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#8b949e" text-anchor="middle">ctags</text>
+  <text x="609" y="111" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">Symbol index</text>
+
+  <text x="739" y="97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#8b949e" text-anchor="middle">LSP</text>
+  <text x="739" y="111" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">Language Server</text>
+
+  <!-- Vertical dividers -->
+  <line x1="284" y1="78" x2="284" y2="370" stroke="#30363d" stroke-width="1"/>
+  <line x1="414" y1="78" x2="414" y2="370" stroke="#30363d" stroke-width="1"/>
+  <line x1="544" y1="78" x2="544" y2="370" stroke="#30363d" stroke-width="1"/>
+  <line x1="674" y1="78" x2="674" y2="370" stroke="#30363d" stroke-width="1"/>
+  <line x1="804" y1="78" x2="804" y2="370" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Row helper macro: rows at y=114, 146, 178, 210, 242, 274, 306, 338 -->
+  <!-- Row height = 32 -->
+
+  <!-- Symbols -->
+  <!-- ✓ green = #3fb950, ✗ red = #f85149, ~ orange = #f0883e -->
+
+  <!-- Row 1: Token-efficient context -->
+  <rect x="24" y="114" width="852" height="32" fill="#161b22" opacity="0.4"/>
+  <line x1="24" y1="114" x2="876" y2="114" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Token-efficient context</text>
+  <rect x="284" y="114" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="609" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Row 2: Cross-session memory -->
+  <line x1="24" y1="146" x2="876" y2="146" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Cross-session memory</text>
+  <rect x="284" y="146" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="609" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Row 3: Impact graph -->
+  <rect x="24" y="178" width="852" height="32" fill="#161b22" opacity="0.4"/>
+  <line x1="24" y1="178" x2="876" y2="178" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Dependency / impact graph</text>
+  <rect x="284" y="178" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="609" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#f0883e" text-anchor="middle">partial</text>
+
+  <!-- Row 4: Semantic search -->
+  <line x1="24" y1="210" x2="876" y2="210" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Semantic search</text>
+  <rect x="284" y="210" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="609" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Row 5: Works without LSP server -->
+  <rect x="24" y="242" width="852" height="32" fill="#161b22" opacity="0.4"/>
+  <line x1="24" y1="242" x2="876" y2="242" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Works without LSP server</text>
+  <rect x="284" y="242" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="609" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="739" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Row 6: Multi-language (13) -->
+  <line x1="24" y1="274" x2="876" y2="274" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Multi-language support (13+)</text>
+  <rect x="284" y="274" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="609" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#f0883e" text-anchor="middle">partial</text>
+  <text x="739" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#f0883e" text-anchor="middle">partial</text>
+
+  <!-- Row 7: MCP integration -->
+  <rect x="24" y="306" width="852" height="32" fill="#161b22" opacity="0.4"/>
+  <line x1="24" y1="306" x2="876" y2="306" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="327" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Native MCP integration</text>
+  <rect x="284" y="306" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="327" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="327" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="609" y="327" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="327" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Row 8: Multi-repo -->
+  <line x1="24" y1="338" x2="876" y2="338" stroke="#30363d" stroke-width="0.5"/>
+  <text x="34" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#e6edf3">Multi-repo support</text>
+  <rect x="284" y="338" width="130" height="32" fill="#3fb950" opacity="0.08"/>
+  <text x="349" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="479" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#3fb950" text-anchor="middle">✓</text>
+  <text x="609" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+  <text x="739" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#f85149" text-anchor="middle">✗</text>
+
+  <!-- Bottom border -->
+  <line x1="24" y1="370" x2="876" y2="370" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Outer border -->
+  <rect x="24" y="78" width="852" height="292" rx="6" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Legend -->
+  <text x="34" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#3fb950">✓ supported</text>
+  <text x="134" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#f85149">✗ not supported</text>
+  <text x="264" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#f0883e">partial limited support</text>
+</svg>
