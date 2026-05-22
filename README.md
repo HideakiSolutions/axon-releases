@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-blue)](https://docs.anthropic.com/claude-code)
-[![MCP](https://img.shields.io/badge/MCP-25%20tools-8b5cf6)](https://github.com/HideakiSolutions/axon-releases)
+[![MCP](https://img.shields.io/badge/MCP-26%20tools-8b5cf6)](https://github.com/HideakiSolutions/axon-releases)
 [![Homebrew](https://img.shields.io/badge/Homebrew-tap-orange)](https://github.com/HideakiSolutions/homebrew-axon)
 [![Latest Release](https://img.shields.io/github/v/release/HideakiSolutions/axon-releases)](https://github.com/HideakiSolutions/axon-releases/releases/latest)
 
@@ -12,7 +12,7 @@
 
 **axon** is a local [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that delivers **surgical context** for AI coding agents. Instead of dumping entire files into the context window, axon builds a precise dependency graph of your codebase and assembles a token-budget-aware **context capsule** — only the pivot files and the relevant signatures of their dependencies.
 
-It integrates directly with [Claude Code](https://docs.anthropic.com/claude-code) via MCP and responds to `get_context_capsule` and 24 other tools, all serving one goal:
+It integrates directly with [Claude Code](https://docs.anthropic.com/claude-code) via MCP and responds to `get_context_capsule` and 25 other tools, all serving one goal:
 
 > **Let the agent see exactly what it needs. Nothing more.**
 
@@ -99,7 +99,7 @@ Download the latest release from [GitHub Releases](https://github.com/HideakiSol
 **Linux x86-64 example:**
 
 ```bash
-VERSION=0.5.5
+VERSION=1.1.1
 curl -L -o axon.tar.gz \
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
 tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
@@ -108,10 +108,8 @@ tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
 
 ### Windows x64 — Direct download
 
-> **Note:** Windows binaries are available from v0.5.6. For v0.5.5, use Linux or macOS.
-
 ```powershell
-$VERSION = "0.5.6"
+$VERSION = "1.1.1"
 Invoke-WebRequest `
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
   -OutFile "axon.zip"
@@ -132,7 +130,7 @@ $env:PATH += ";$(Resolve-Path bin)"
 |----------|------|
 | Linux x86-64 | `axon-X.Y.Z-linux-x64.tar.gz` |
 | macOS Apple Silicon | `axon-X.Y.Z-macos-arm64.tar.gz` |
-| Windows x64 | `axon-0.5.6-windows-x64.zip` *(available from v0.5.6)* |
+| Windows x64 | `axon-X.Y.Z-windows-x64.zip` |
 
 ---
 
@@ -175,7 +173,7 @@ Once registered, Claude Code will call axon's MCP tools automatically whenever i
 
 ---
 
-## All 15 MCP Tools
+## All 26 MCP Tools
 
 ![MCP Tools Overview](docs/assets/mcp-tools-grid.png)
 
@@ -183,7 +181,7 @@ Once registered, Claude Code will call axon's MCP tools automatically whenever i
 
 | Tool | Parameters | Description |
 |------|-----------|-------------|
-| `get_context_capsule` | `query`, `pivot_files?`, `token_budget?` | Token-efficient context capsule — the primary entry point for most agent queries |
+| `get_context_capsule` | `query`, `pivot_files?`, `token_budget?`, `dialogue_budget?`, `no_cache?` | Token-efficient context capsule — the primary entry point for most agent queries |
 | `get_overview` | `limit?` | Top files by coupling + top referenced symbols — ideal for onboarding an unfamiliar codebase |
 | `get_impact_graph` | `files[]` | Which files depend on the given files — blast radius before a refactor |
 | `get_callers` | `symbol_name`, `file_path?`, `limit?` | Files that import the file defining a symbol — backward trace for debugging |
@@ -209,10 +207,26 @@ Once registered, Claude Code will call axon's MCP tools automatically whenever i
 | Tool | Parameters | Description |
 |------|-----------|-------------|
 | `rename` | `symbol_name`, `new_name`, `dry_run?` | Graph-assisted rename with impact preview |
-| `route_map` | — | List all detected HTTP routes in the project |
+| `route_map` | `framework?` | List all detected HTTP routes (optionally filter by framework) |
 | `api_impact` | `route_path` | Handler file + impact graph for an HTTP route |
-| `detect_changes` | `since?` | Symbols and files affected by recent git changes |
-| `group_list` / `group_impact` | — | Multi-repo registry and cross-repo blast radius |
+| `detect_changes` | `ref?` | Symbols and files affected by recent git changes |
+| `group_list` | — | List all registered repos and groups |
+| `group_impact` | `file`, `group?` | Cross-repo blast radius for a file |
+
+### Dialogue Layer Tools
+
+| Tool | Parameters | Description |
+|------|-----------|-------------|
+| `thread_create` | `name`, `kind?` | Create a named conversation scope (project / person / topic) |
+| `thread_list` | — | List all threads |
+| `thread_get` | `thread_id` | List sessions within a thread with digest summaries |
+| `session_start` | `thread_id`, `label?` | Open a new working session |
+| `session_end` | `session_id`, `compute_digest?` | Close session; optionally generate ADF digest |
+| `turn_add` | `session_id`, `role`, `content` | Append a turn; auto-anchors to referenced code artifacts |
+| `turn_search` | `query`, `limit?`, `thread_id?` | Semantic search over all stored turns |
+| `session_get` | `session_id`, `limit?` | Retrieve turns from a session in chronological order |
+| `anchor_link` | `turn_id`, `file_id?`, `symbol_id?`, `kind?` | Manually link a turn to a code artifact |
+| `dialogue_context` | `query`, `file_paths?`, `limit?`, `thread_id?` | Past turns related to files or a query, within token budget |
 
 ---
 
@@ -242,6 +256,8 @@ flowchart TD
 | API change impact | `route_map` → `api_impact` |
 | Git change blast radius | `detect_changes` |
 | Multi-repo impact | `group_list` → `group_impact` |
+| Track session dialogue | `thread_create` + `session_start` → `turn_add` → `session_end` |
+| Recall past conversation | `turn_search` / `dialogue_context` |
 | Graph-safe rename | `rename` |
 
 ### Worked Examples
@@ -278,7 +294,7 @@ group_list()
 
 ---
 
-## Supported Languages (13)
+## Supported Languages (15)
 
 | Language | Extension(s) |
 |----------|-------------|
@@ -295,6 +311,8 @@ group_list()
 | C++ | `.cpp`, `.cc`, `.h`, `.hpp` |
 | Kotlin | `.kt`, `.kts` |
 | Vue | `.vue` (with sub-parsed TypeScript/JavaScript) |
+| Lua | `.lua` |
+| Nix | `.nix` |
 
 ---
 
@@ -318,10 +336,16 @@ axon serve --http --port=7070 --group=backend
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/graph` | Full dependency graph (JSON) |
-| `GET` | `/api/symbol/:id` | Symbol detail + edges |
+| `GET` | `/api/symbol/<name>` | Symbol detail + edges |
 | `GET` | `/api/search?q=` | Semantic search over index |
 | `GET` | `/api/observations` | Saved observations |
 | `POST` | `/api/capsule` | Context capsule (same as MCP tool) |
+| `GET` | `/api/threads` | List all threads |
+| `GET` | `/api/threads/:id/sessions` | Sessions within a thread |
+| `GET` | `/api/sessions/:id/turns` | Turns within a session |
+| `GET` | `/api/dialogue/search?q=` | Semantic search over stored turns |
+| `POST` | `/api/detect-changes` | Change blast radius for a git ref |
+| `GET` | `/api/overview` | Top files and symbols (same as get_overview) |
 
 ---
 
@@ -344,7 +368,7 @@ axon-setup --download-model /path/to/your-project
 export AXON_EMBEDDING_MODEL=/path/to/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
-Without the model, all 25 tools work normally except `search_memory`, `turn_search`, and the semantic-query path of `get_context_capsule` (which falls back to graph-only traversal).
+Without the model, all 26 tools work normally except `search_memory`, `turn_search`, and the semantic-query path of `get_context_capsule` (which falls back to graph-only traversal).
 
 ### Multi-Repo Registry
 
@@ -371,14 +395,14 @@ axon serve --http --port=7070 --group=backend
 | Multi-repo blast radius | ✅ Group registry | ❌ None | ❌ None | ❌ None |
 | Skeletonization | ✅ Signatures-only fallback | ❌ None | ❌ None | ✅ Partial |
 | Works offline | ✅ Local DuckDB | ✅ | ❌ Often cloud | ✅ |
-| MCP-native | ✅ 25 tools | ❌ None | ⚠️ Adapters vary | ⚠️ Varies |
+| MCP-native | ✅ 26 tools | ❌ None | ⚠️ Adapters vary | ⚠️ Varies |
 | Conversation memory | ✅ Native Dialogue Layer | ❌ None | ❌ None | ❌ None |
 
 ---
 
 ## Roadmap
 
-- [x] 25 MCP tools with full MCP protocol compliance
+- [x] 26 MCP tools with full MCP protocol compliance
 - [x] Write-through indexing (auto-reindex after edits in Claude Code)
 - [x] Hybrid search (graph BFS + semantic embeddings)
 - [x] HTTP mode with REST API
@@ -432,7 +456,7 @@ MIT — see [LICENSE](LICENSE).
 
 **axon** é um servidor [MCP (Model Context Protocol)](https://modelcontextprotocol.io) local que entrega **contexto cirúrgico** para agentes de IA que trabalham com código. Em vez de despejar arquivos inteiros na janela de contexto, o axon constrói um grafo preciso de dependências do seu projeto e monta uma **cápsula de contexto** com orçamento de tokens — apenas os arquivos-pivô e as assinaturas relevantes de suas dependências.
 
-Integra-se diretamente ao [Claude Code](https://docs.anthropic.com/claude-code) via MCP e responde a `get_context_capsule` e mais 24 ferramentas, todas com um único objetivo:
+Integra-se diretamente ao [Claude Code](https://docs.anthropic.com/claude-code) via MCP e responde a `get_context_capsule` e mais 25 ferramentas, todas com um único objetivo:
 
 > **Deixar o agente ver exatamente o que precisa. Nada mais.**
 
@@ -463,7 +487,7 @@ flowchart LR
 
 Na indexação, o axon parseia todos os arquivos do projeto com grammars tree-sitter, constrói um grafo de dependências em nível de símbolo e opcionalmente gera embeddings para busca semântica — tudo armazenado localmente em um arquivo DuckDB dentro de `.axon/`.
 
-Na consulta, o agente chama `get_context_capsule` (ou qualquer uma das 24 outras ferramentas). O axon realiza um BFS no grafo a partir dos arquivos-pivô mais relevantes e **skeletoniza** os arquivos de suporte (mantendo apenas assinaturas, sem corpos de função) até atingir o orçamento de tokens. O resultado é uma cápsula de contexto compacta e de alto sinal.
+Na consulta, o agente chama `get_context_capsule` (ou qualquer uma das 25 outras ferramentas). O axon realiza um BFS no grafo a partir dos arquivos-pivô mais relevantes e **skeletoniza** os arquivos de suporte (mantendo apenas assinaturas, sem corpos de função) até atingir o orçamento de tokens. O resultado é uma cápsula de contexto compacta e de alto sinal.
 
 ---
 
@@ -519,7 +543,7 @@ Baixe a versão mais recente em [GitHub Releases](https://github.com/HideakiSolu
 **Exemplo Linux x86-64:**
 
 ```bash
-VERSION=0.5.5
+VERSION=1.1.1
 curl -L -o axon.tar.gz \
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
 tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
@@ -528,10 +552,8 @@ tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
 
 ### Windows x64 — Download direto
 
-> **Nota:** Binários para Windows disponíveis a partir da v0.5.6. Para v0.5.5, use Linux ou macOS.
-
 ```powershell
-$VERSION = "0.5.6"
+$VERSION = "1.1.1"
 Invoke-WebRequest `
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
   -OutFile "axon.zip"
@@ -552,7 +574,7 @@ $env:PATH += ";$(Resolve-Path bin)"
 |------------|---------|
 | Linux x86-64 | `axon-X.Y.Z-linux-x64.tar.gz` |
 | macOS Apple Silicon | `axon-X.Y.Z-macos-arm64.tar.gz` |
-| Windows x64 | `axon-0.5.6-windows-x64.zip` *(disponível a partir da v0.5.6)* |
+| Windows x64 | `axon-X.Y.Z-windows-x64.zip` |
 
 ---
 
@@ -593,7 +615,7 @@ Após o `axon-setup`, o servidor MCP já está registrado. Para configurar manua
 
 ---
 
-## As 15 Ferramentas MCP
+## As 26 Ferramentas MCP
 
 ![MCP Tools Overview](docs/assets/mcp-tools-grid.png)
 
@@ -601,7 +623,7 @@ Após o `axon-setup`, o servidor MCP já está registrado. Para configurar manua
 
 | Ferramenta | Parâmetros | Descrição |
 |------------|-----------|-----------|
-| `get_context_capsule` | `query`, `pivot_files?`, `token_budget?` | Cápsula de contexto com eficiência de tokens — ponto de entrada principal |
+| `get_context_capsule` | `query`, `pivot_files?`, `token_budget?`, `dialogue_budget?`, `no_cache?` | Cápsula de contexto com eficiência de tokens — ponto de entrada principal |
 | `get_overview` | `limit?` | Top arquivos por acoplamento + top símbolos referenciados |
 | `get_impact_graph` | `files[]` | Quais arquivos dependem dos arquivos fornecidos |
 | `get_callers` | `symbol_name`, `file_path?`, `limit?` | Arquivos que importam o arquivo que define um símbolo |
@@ -627,10 +649,26 @@ Após o `axon-setup`, o servidor MCP já está registrado. Para configurar manua
 | Ferramenta | Parâmetros | Descrição |
 |------------|-----------|-----------|
 | `rename` | `symbol_name`, `new_name`, `dry_run?` | Rename assistido pelo grafo com prévia de impacto |
-| `route_map` | — | Lista todas as rotas HTTP detectadas no projeto |
+| `route_map` | `framework?` | Lista todas as rotas HTTP detectadas (opcionalmente por framework) |
 | `api_impact` | `route_path` | Arquivo handler + grafo de impacto para uma rota HTTP |
-| `detect_changes` | `since?` | Símbolos e arquivos afetados por mudanças recentes no git |
-| `group_list` / `group_impact` | — | Registro multi-repositório e blast radius entre repos |
+| `detect_changes` | `ref?` | Símbolos e arquivos afetados por mudanças recentes no git |
+| `group_list` | — | Listar todos os repos e grupos registrados |
+| `group_impact` | `file`, `group?` | Blast radius cross-repo para um arquivo |
+
+### Ferramentas da Camada de Diálogo
+
+| Ferramenta | Parâmetros | Descrição |
+|------------|-----------|-----------|
+| `thread_create` | `name`, `kind?` | Criar escopo de conversação nomeado (project / person / topic) |
+| `thread_list` | — | Listar todos os threads |
+| `thread_get` | `thread_id` | Listar sessões de um thread com digests |
+| `session_start` | `thread_id`, `label?` | Abrir nova sessão de trabalho |
+| `session_end` | `session_id`, `compute_digest?` | Encerrar sessão; gerar digest ADF opcionalmente |
+| `turn_add` | `session_id`, `role`, `content` | Adicionar turn; auto-ancora a artefatos de código |
+| `turn_search` | `query`, `limit?`, `thread_id?` | Busca semântica sobre todos os turns armazenados |
+| `session_get` | `session_id`, `limit?` | Recuperar turns de uma sessão em ordem cronológica |
+| `anchor_link` | `turn_id`, `file_id?`, `symbol_id?`, `kind?` | Vincular turn a artefato de código manualmente |
+| `dialogue_context` | `query`, `file_paths?`, `limit?`, `thread_id?` | Turns anteriores relacionados a arquivos ou consulta |
 
 ---
 
@@ -660,6 +698,8 @@ flowchart TD
 | Impacto de mudança de API | `route_map` → `api_impact` |
 | Blast radius de mudança git | `detect_changes` |
 | Impacto multi-repositório | `group_list` → `group_impact` |
+| Rastrear diálogo da sessão | `thread_create` + `session_start` → `turn_add` → `session_end` |
+| Recuperar conversa anterior | `turn_search` / `dialogue_context` |
 | Rename seguro pelo grafo | `rename` |
 
 ### Exemplos Práticos
@@ -696,7 +736,7 @@ group_list()
 
 ---
 
-## Linguagens Suportadas (13)
+## Linguagens Suportadas (15)
 
 | Linguagem | Extensões |
 |-----------|-----------|
@@ -713,6 +753,8 @@ group_list()
 | C++ | `.cpp`, `.cc`, `.h`, `.hpp` |
 | Kotlin | `.kt`, `.kts` |
 | Vue | `.vue` (com sub-parse TypeScript/JavaScript) |
+| Lua | `.lua` |
+| Nix | `.nix` |
 
 ---
 
@@ -734,10 +776,16 @@ axon serve --http --port=7070 --group=backend
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | `GET` | `/api/graph` | Grafo de dependências completo (JSON) |
-| `GET` | `/api/symbol/:id` | Detalhes do símbolo + arestas |
+| `GET` | `/api/symbol/<name>` | Detalhes do símbolo + arestas |
 | `GET` | `/api/search?q=` | Busca semântica no índice |
 | `GET` | `/api/observations` | Observações salvas |
 | `POST` | `/api/capsule` | Cápsula de contexto (igual à ferramenta MCP) |
+| `GET` | `/api/threads` | Listar todos os threads |
+| `GET` | `/api/threads/:id/sessions` | Sessões dentro de um thread |
+| `GET` | `/api/sessions/:id/turns` | Turns dentro de uma sessão |
+| `GET` | `/api/dialogue/search?q=` | Busca semântica sobre turns armazenados |
+| `POST` | `/api/detect-changes` | Blast radius de mudanças para um ref git |
+| `GET` | `/api/overview` | Top arquivos e símbolos (igual a get_overview) |
 
 ---
 
@@ -760,7 +808,7 @@ axon-setup --download-model /caminho/para/seu-projeto
 export AXON_EMBEDDING_MODEL=/caminho/para/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
-Sem o modelo, todas as 25 ferramentas funcionam normalmente, exceto `search_memory`, `turn_search` e o caminho de query semântica de `get_context_capsule` (que usa apenas travessia de grafo como fallback).
+Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memory`, `turn_search` e o caminho de query semântica de `get_context_capsule` (que usa apenas travessia de grafo como fallback).
 
 ---
 
@@ -778,14 +826,14 @@ Sem o modelo, todas as 25 ferramentas funcionam normalmente, exceto `search_memo
 | Blast radius multi-repo | ✅ Registro de grupos | ❌ Nenhum | ❌ Nenhum | ❌ Nenhum |
 | Skeletonização | ✅ Fallback só assinaturas | ❌ Nenhum | ❌ Nenhum | ✅ Parcial |
 | Funciona offline | ✅ DuckDB local | ✅ | ❌ Frequentemente na nuvem | ✅ |
-| MCP nativo | ✅ 25 ferramentas | ❌ Nenhum | ⚠️ Adaptadores variados | ⚠️ Varia |
+| MCP nativo | ✅ 26 ferramentas | ❌ Nenhum | ⚠️ Adaptadores variados | ⚠️ Varia |
 | Memória de conversação | ✅ Camada de Diálogo nativa | ❌ Nenhum | ❌ Nenhum | ❌ Nenhum |
 
 ---
 
 ## Roadmap
 
-- [x] 25 ferramentas MCP com conformidade total ao protocolo MCP
+- [x] 26 ferramentas MCP com conformidade total ao protocolo MCP
 - [x] Indexação write-through (reindexação automática após edições no Claude Code)
 - [x] Busca híbrida (BFS no grafo + embeddings semânticos)
 - [x] Modo HTTP com API REST
