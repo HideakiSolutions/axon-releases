@@ -398,7 +398,92 @@ search_memory(query="<área em que está trabalhando>")
 
 ---
 
-## 8. Rename Seguro pelo Grafo — "Renomear authenticateUser para verifyToken"
+## 8. Camada de Diálogo — "Persistir e Recuperar Contexto de Conversas Entre Sessões"
+
+**Contexto:** Você quer rastrear decisões, causas raiz e insights sobre o código de forma estruturada — que sobreviva a resets da janela de contexto — e recuperá-los semanticamente em sessões futuras.
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant CC as Claude Code
+    participant A as axon Dialogue Layer
+    
+    U->>CC: Iniciar nova sessão de projeto
+    CC->>A: thread_create(name="refactor-auth", kind="project")
+    CC->>A: session_start(thread_id=1, label="Investigação JWT")
+    CC->>A: turn_add(role="user", content="Como o JWT expira?")
+    Note over A: auto-ancora em src/auth/token.ts
+    CC->>A: turn_add(role="assistant", content="Expiração está em validateToken:47...")
+    CC->>A: session_end(session_id=1, compute_digest=true)
+    
+    Note over U: Próximo dia — nova sessão do Claude Code
+    U->>CC: "O que decidimos sobre o TTL do JWT?"
+    CC->>A: turn_search(query="decisões sobre TTL JWT expiração")
+    A-->>CC: Turns anteriores + digest, ordenados por similaridade
+```
+
+**Sequência de ferramentas:**
+
+```
+thread_create(name="<projeto ou tópico>", kind="project|person|topic")
+  → session_start(thread_id=<id>, label="<o que você está fazendo hoje>")
+  → turn_add(session_id=<id>, role="user"|"assistant", content="<texto verbatim>")
+  → [repetir turn_add para cada troca de mensagens]
+  → session_end(session_id=<id>, compute_digest=true)
+
+# Em uma sessão futura:
+turn_search(query="<tópico>")                                  ← recall semântico
+dialogue_context(query="<tópico>", file_paths=["<arquivo>"])   ← recall ancorado
+```
+
+**Passo a passo no Claude Code:**
+
+1. **Crie um thread para este projeto ou tópico (uma vez).**
+
+   ```
+   Crie um novo thread de diálogo para o projeto refactor-auth.
+   ```
+
+2. **Inicie uma sessão para o trabalho de hoje.**
+
+   ```
+   Inicie uma sessão no thread refactor-auth, com rótulo "Investigação de TTL do JWT".
+   ```
+
+3. **Registre a conversa conforme trabalha.** O Claude Code pode logar turns automaticamente quando você pede para rastrear a sessão, ou você pode salvar trocas-chave manualmente.
+
+   ```
+   Registre esta troca na sessão atual: perguntei sobre expiração de JWT; resposta: validateToken em src/auth/token.ts:47 usa TTL de 24 horas configurado em config.
+   ```
+
+4. **Encerre a sessão com um digest ao terminar.**
+
+   ```
+   Encerre esta sessão e compute um digest.
+   ```
+
+5. **Em uma sessão futura, recupere o contexto.**
+
+   ```
+   Pesquise no histórico de diálogo tudo que discutimos sobre TTL do JWT e expiração de tokens.
+   ```
+
+   Ou injete em uma capsule:
+
+   ```
+   Me dê contexto sobre validação JWT, incluindo conversas anteriores relevantes.
+   ```
+   *(O Claude Code chama `get_context_capsule` com `dialogue_budget=1000`.)*
+
+**Dicas:**
+- Use `kind="project"` para trabalho de longa duração em uma feature; `kind="topic"` para uma investigação focada.
+- `session_end(compute_digest=true)` comprime a sessão em um digest ADF pesquisável — faça isso ao final de cada sessão.
+- `dialogue_context` + `file_paths` recupera apenas turns ancorados a arquivos específicos, dando resultados mais precisos do que um `turn_search` amplo.
+- O auto-anchor vincula turns aos arquivos mencionados sem trabalho manual. Use `anchor_link(turn_id=<id>, kind="decision")` quando quiser marcar um turn como decisão-chave.
+
+---
+
+## 9. Rename Seguro pelo Grafo — "Renomear authenticateUser para verifyToken"
 
 **Contexto:** Uma função ou classe precisa ser renomeada em todo o projeto. Find-and-replace manual arrisca perder importações com alias, re-exportações e referências dinâmicas.
 
@@ -452,4 +537,6 @@ rename(symbol_name="authenticateUser", new_name="verifyToken", dry_run=true)
 | Mudança em endpoint de API | `route_map` | `api_impact` → `get_context_capsule` |
 | Mudança multi-repo | `group_list` | `group_impact` |
 | Retomando trabalho | `search_memory` | `get_context_capsule` |
+| Rastrear diálogo da sessão | `thread_create` + `session_start` | `turn_add` → `session_end(compute_digest=true)` |
+| Recuperar conversa anterior | `turn_search` | `dialogue_context` |
 | Rename | `rename` (dry run) | `rename` (aplicar) → `get_tests_for` |

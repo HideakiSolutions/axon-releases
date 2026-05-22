@@ -53,7 +53,7 @@ That's it. Skip to [First Index](#first-index) if you want to understand what `a
 2. Download and extract:
 
 ```bash
-VERSION=0.5.5
+VERSION=1.1.1
 
 # Linux x86-64
 curl -L -o axon.tar.gz \
@@ -80,7 +80,7 @@ cd "axon-${VERSION}-linux-x64"
 ### Option 3 — Windows x64
 
 ```powershell
-$VERSION = "0.5.5"
+$VERSION = "1.1.1"
 Invoke-WebRequest `
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
   -OutFile "axon.zip"
@@ -206,7 +206,7 @@ sequenceDiagram
 
 ## Optional: Embedding Model for Semantic Search
 
-axon supports a local embedding model for semantic-query mode in `get_context_capsule` and for `search_memory`. Without it, all 15 tools still work — `get_context_capsule` falls back to graph-only traversal.
+axon supports a local embedding model for semantic-query mode in `get_context_capsule` and for `search_memory`. Without it, all 26 tools still work — `get_context_capsule` falls back to graph-only traversal.
 
 ### Download the model automatically
 
@@ -250,11 +250,65 @@ Run get_impact_graph on src/auth/middleware.ts so I know what would break if I c
 
 ---
 
+## Dialogue Layer (Conversation Memory)
+
+axon v1.1.0 introduced the **Dialogue Layer** — native conversation history stored alongside your code index in the same DuckDB database. This lets you persist insights, decisions, and context across Claude Code sessions.
+
+### How it works
+
+Conversations are organized as **threads → sessions → turns**:
+
+```mermaid
+graph TD
+    T[Thread\ne.g. "auth-refactor"] --> S1[Session 1\n2026-05-10]
+    T --> S2[Session 2\n2026-05-15]
+    S1 --> Turn1[turn: user\n"How does JWT validation work?"]
+    S1 --> Turn2[turn: assistant\n"It uses the validateToken fn..."]
+    S2 --> Turn3[turn: user\n"Continue from last session..."]
+```
+
+Each turn is automatically **anchored** to the code files and symbols it references — no manual linking required.
+
+### Quick start
+
+```
+# In Claude Code, ask axon to track this work session:
+thread_create(name="auth-refactor", kind="project")
+session_start(thread_id=1, label="JWT validation investigation")
+
+# Add turns as the conversation progresses:
+turn_add(session_id=1, role="user", content="How does JWT validation work?")
+turn_add(session_id=1, role="assistant", content="It uses validateToken in src/auth/token.ts...")
+
+# Close and digest the session when done:
+session_end(session_id=1, compute_digest=true)
+```
+
+### Retrieve past context
+
+In a future session, recover relevant history:
+
+```
+# Semantic search over all past turns:
+turn_search(query="JWT validation decisions")
+
+# Or inject past turns into a capsule:
+get_context_capsule(
+  query="auth token validation",
+  pivot_files=["src/auth/token.ts"],
+  dialogue_budget=1000
+)
+```
+
+See [MCP Tools](mcp-tools.md) for the full Dialogue Layer tool reference (§16–§26).
+
+---
+
 ## Next Steps
 
 | Topic | Document |
 |-------|----------|
 | All CLI commands with flags and examples | [CLI Reference](cli-reference.md) |
-| All 15 MCP tools with parameters and usage | [MCP Tools](mcp-tools.md) |
+| All 26 MCP tools with parameters and usage | [MCP Tools](mcp-tools.md) |
 | Configuration files and environment variables | [Configuration](configuration.md) |
 | Agentic workflow patterns with step-by-step prompts | [Workflows](workflows.md) |

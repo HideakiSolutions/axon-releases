@@ -1,6 +1,6 @@
 # MCP Tools Reference
 
-axon exposes 25 MCP tools to Claude Code via the JSON-RPC 2.0 protocol. Each tool is documented below with its purpose, parameters, return value, recommended usage scenario, and a concrete example.
+axon exposes 26 MCP tools to Claude Code via the JSON-RPC 2.0 protocol. Each tool is documented below with its purpose, parameters, return value, recommended usage scenario, and a concrete example.
 
 Claude Code invokes these tools automatically based on context. You can also trigger them explicitly by describing what you want in natural language.
 
@@ -47,6 +47,8 @@ This is the primary entry point for most agentic tasks.
 | `query` | string | Yes | Natural-language description of what you need context for. Example: `"how does JWT validation work"` |
 | `pivot_files` | string[] | No | Steer which files are treated as primary pivots. Paths relative to project root. When omitted, axon selects pivots via semantic + graph search. |
 | `token_budget` | integer | No | Maximum tokens to include in the capsule. Default: 8192. Override with `AXON_TOKEN_BUDGET` env var. |
+| `dialogue_budget` | integer | No | Token budget for `related_turns[]` from dialogue history (default: 0 = disabled). |
+| `no_cache` | boolean | No | Bypass the query-hash cache and force a fresh assembly (default: false). |
 
 **Returns**
 
@@ -194,7 +196,7 @@ Backward trace — given a symbol name, return all files that import the file wh
 |------|------|----------|-------------|
 | `symbol_name` | string | Yes | Name of the function, class, or variable to trace. |
 | `file_path` | string | No | Disambiguate when the same symbol name appears in multiple files. Relative to project root. |
-| `limit` | integer | No | Maximum number of caller files to return. Default: 20. |
+| `limit` | integer | No | Maximum number of caller files to return. Default: 50. |
 
 **Returns**
 
@@ -549,7 +551,9 @@ List all detected HTTP routes in the project with their handler files. axon dete
 
 **Parameters**
 
-None.
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `framework` | string | No | Filter results by framework: `nextjs`, `express`, `fastapi`, `flask`. |
 
 **Returns**
 
@@ -618,7 +622,7 @@ Returns the symbols and files affected by recent git changes. Uses git diff to i
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `since` | string | No | Git ref to diff against. Examples: `HEAD~3`, `main`, a commit SHA. Default: `HEAD~1`. |
+| `ref` | string | No | Git ref to diff against. Examples: `HEAD~3`, `main`, a commit SHA. Default: `HEAD`. |
 
 **Returns**
 
@@ -641,12 +645,12 @@ What files did the last 3 commits change, and what else might be affected?
 
 Explicit call:
 ```
-detect_changes(since="HEAD~3")
+detect_changes(ref="HEAD~3")
 ```
 
 Compare against main branch:
 ```
-detect_changes(since="main")
+detect_changes(ref="main")
 ```
 
 ---
@@ -669,6 +673,7 @@ Multi-repo tools for projects registered in `~/.axon/registry.json`.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `file` | string | Yes | Path to the file (absolute or relative to the current project root) whose cross-repo impact you want to assess. |
+| `group` | string | No | Limit search to repos registered under this group name. |
 
 **Returns**
 
@@ -974,7 +979,36 @@ dialogue_context {
 
 ---
 
-### 25. `get_context_capsule` with `dialogue_budget`
+### 25. `thread_get`
+
+**Purpose**
+
+List all sessions within a thread, including their digest summaries. Use to navigate conversation history by thread.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `thread_id` | integer | Yes | ID of the thread to inspect. |
+
+**Returns**
+
+Array of sessions with `session_id`, `label`, `started_at`, `ended_at`, and `digest` (ADF summary text, if computed).
+
+**When to Use**
+
+- To review what was discussed in a project thread across multiple sessions.
+- To retrieve a session ID before calling `session_get`.
+
+**Example**
+
+```
+thread_get { "thread_id": 1 }
+```
+
+---
+
+### 26. `get_context_capsule` with `dialogue_budget`
 
 The existing `get_context_capsule` tool accepts an optional `dialogue_budget` parameter (token count). When set, the response includes a `related_turns` array — past conversations anchored to the same pivot files, ranked by semantic similarity, within budget.
 
@@ -1024,12 +1058,14 @@ When `dialogue_budget=0` (default), behavior is bit-for-bit identical to the pre
 | `run_pipeline` | `root?` | Full reindex (rarely needed) |
 | `index_paths` | `paths[]`, `prune?` | Incremental update of specific files |
 | `rename` | `symbol_name`, `new_name`, `dry_run?` | Graph-safe rename across codebase |
-| `route_map` | — | List all API endpoints |
+| `route_map` | `framework?` | List all API endpoints (optionally filter by framework) |
 | `api_impact` | `route_path` | Blast radius for an HTTP endpoint |
-| `detect_changes` | `since?` | What did recent commits touch? |
-| `group_list` / `group_impact` | `file` (impact) | Cross-repo blast radius |
+| `detect_changes` | `ref?` | What did recent commits touch? (default ref: HEAD) |
+| `group_list` | — | List all registered repos and groups |
+| `group_impact` | `file`, `group?` | Cross-repo blast radius for a file |
 | `thread_create` | `name`, `kind?` | Create a named conversation scope |
 | `thread_list` | — | List all threads |
+| `thread_get` | `thread_id` | List sessions within a thread with digest summaries |
 | `session_start` | `thread_id`, `label?` | Open a new working session |
 | `session_end` | `session_id`, `compute_digest?` | Close session; optionally generate digest |
 | `turn_add` | `session_id`, `role`, `content` | Append a turn; auto-anchors to code |

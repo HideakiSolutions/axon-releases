@@ -53,7 +53,7 @@ Pronto. Pule para [Primeiro Índice](#primeiro-índice) se quiser entender o que
 2. Baixe e extraia:
 
 ```bash
-VERSION=0.5.5
+VERSION=1.1.1
 
 # Linux x86-64
 curl -L -o axon.tar.gz \
@@ -80,7 +80,7 @@ O `install.sh` copia o binário para um local no PATH, indexa o projeto e config
 ### Opção 3 — Windows x64
 
 ```powershell
-$VERSION = "0.5.5"
+$VERSION = "1.1.1"
 Invoke-WebRequest `
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
   -OutFile "axon.zip"
@@ -206,7 +206,7 @@ sequenceDiagram
 
 ## Opcional: Modelo de Embeddings para Busca Semântica
 
-O axon suporta um modelo de embeddings local para o modo de query semântica no `get_context_capsule` e para `search_memory`. Sem ele, todas as 15 ferramentas funcionam — o `get_context_capsule` usa apenas traversal de grafo como fallback.
+O axon suporta um modelo de embeddings local para o modo de query semântica no `get_context_capsule` e para `search_memory`. Sem ele, todas as 26 ferramentas funcionam — o `get_context_capsule` usa apenas traversal de grafo como fallback.
 
 ### Baixar o modelo automaticamente
 
@@ -250,11 +250,65 @@ Execute get_impact_graph em src/auth/middleware.ts para eu saber o que quebraria
 
 ---
 
+## Camada de Diálogo (Memória de Conversas)
+
+O axon v1.1.0 introduziu a **Camada de Diálogo** — histórico de conversas armazenado nativamente junto com o índice do código no mesmo banco DuckDB. Isso permite persistir insights, decisões e contexto entre sessões do Claude Code.
+
+### Como funciona
+
+As conversas são organizadas como **threads → sessões → turns**:
+
+```mermaid
+graph TD
+    T[Thread\ne.g. "refactor-auth"] --> S1[Sessão 1\n2026-05-10]
+    T --> S2[Sessão 2\n2026-05-15]
+    S1 --> Turn1[turn: user\n"Como funciona a validação JWT?"]
+    S1 --> Turn2[turn: assistant\n"Usa a função validateToken..."]
+    S2 --> Turn3[turn: user\n"Continuando da última sessão..."]
+```
+
+Cada turn é automaticamente **ancorado** aos arquivos e símbolos de código que referencia — sem vinculação manual.
+
+### Início rápido
+
+```
+# No Claude Code, peça ao axon para rastrear esta sessão de trabalho:
+thread_create(name="refactor-auth", kind="project")
+session_start(thread_id=1, label="Investigação de validação JWT")
+
+# Adicione turns conforme a conversa avança:
+turn_add(session_id=1, role="user", content="Como funciona a validação JWT?")
+turn_add(session_id=1, role="assistant", content="Usa validateToken em src/auth/token.ts...")
+
+# Encerre e gere um digest da sessão ao terminar:
+session_end(session_id=1, compute_digest=true)
+```
+
+### Recuperar contexto anterior
+
+Em uma sessão futura, recupere o histórico relevante:
+
+```
+# Busca semântica sobre todos os turns anteriores:
+turn_search(query="decisões sobre validação JWT")
+
+# Ou injete turns anteriores em uma capsule:
+get_context_capsule(
+  query="validação de token de auth",
+  pivot_files=["src/auth/token.ts"],
+  dialogue_budget=1000
+)
+```
+
+Veja [Ferramentas MCP](mcp-tools.md) para a referência completa das ferramentas da Camada de Diálogo (§16–§26).
+
+---
+
 ## Próximos Passos
 
 | Tópico | Documento |
 |--------|-----------|
 | Todos os comandos CLI com flags e exemplos | [Referência CLI](cli-reference.md) |
-| Todas as 15 ferramentas MCP com parâmetros e uso | [Ferramentas MCP](mcp-tools.md) |
+| Todas as 26 ferramentas MCP com parâmetros e uso | [Ferramentas MCP](mcp-tools.md) |
 | Arquivos de configuração e variáveis de ambiente | [Configuração](configuration.md) |
 | Padrões de fluxo agentic com prompts passo a passo | [Workflows](workflows.md) |

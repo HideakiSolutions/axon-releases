@@ -1,6 +1,6 @@
 # Referência de Ferramentas MCP
 
-O axon expõe 25 ferramentas MCP ao Claude Code via protocolo JSON-RPC 2.0. Cada ferramenta está documentada abaixo com sua finalidade, parâmetros, valor de retorno, cenário de uso recomendado e um exemplo concreto.
+O axon expõe 26 ferramentas MCP ao Claude Code via protocolo JSON-RPC 2.0. Cada ferramenta está documentada abaixo com sua finalidade, parâmetros, valor de retorno, cenário de uso recomendado e um exemplo concreto.
 
 O Claude Code invoca essas ferramentas automaticamente com base no contexto. Você também pode acioná-las explicitamente descrevendo o que deseja em linguagem natural.
 
@@ -42,6 +42,8 @@ Este é o ponto de entrada principal para a maioria das tarefas agentic.
 | `query` | string | Sim | Descrição em linguagem natural do contexto necessário. Exemplo: `"como funciona a validação JWT"` |
 | `pivot_files` | string[] | Não | Direciona quais arquivos são tratados como pivôs primários. Caminhos relativos à raiz do projeto. Quando omitido, o axon seleciona pivôs via busca semântica + grafo. |
 | `token_budget` | integer | Não | Máximo de tokens a incluir na capsule. Padrão: 8192. Override com variável de ambiente `AXON_TOKEN_BUDGET`. |
+| `dialogue_budget` | integer | Não | Tokens reservados para turns de conversação anteriores ancorados aos arquivos pivot. Padrão: 0 (desabilitado). |
+| `no_cache` | boolean | Não | Se `true`, ignora o cache de capsule e computa resultado fresco. Útil para validar mudanças pós-reindexação. Padrão: `false`. |
 
 **Retorna**
 
@@ -189,7 +191,7 @@ Rastreamento reverso — dado um nome de símbolo, retorna todos os arquivos que
 |------|------|-------------|-----------|
 | `symbol_name` | string | Sim | Nome da função, classe ou variável a rastrear. |
 | `file_path` | string | Não | Desambigua quando o mesmo nome de símbolo aparece em múltiplos arquivos. Relativo à raiz do projeto. |
-| `limit` | integer | Não | Máximo de arquivos chamadores a retornar. Padrão: 20. |
+| `limit` | integer | Não | Máximo de arquivos chamadores a retornar. Padrão: 50. |
 
 **Retorna**
 
@@ -544,7 +546,9 @@ Lista todas as rotas HTTP detectadas no projeto com seus arquivos handler. O axo
 
 **Parâmetros**
 
-Nenhum.
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `framework` | string | Não | Filtrar por framework específico. Exemplos: `express`, `fastapi`, `gin`. Omitir retorna todas as rotas. |
 
 **Retorna**
 
@@ -613,7 +617,7 @@ Retorna os símbolos e arquivos afetados por mudanças recentes no git. Usa git 
 
 | Nome | Tipo | Obrigatório | Descrição |
 |------|------|-------------|-----------|
-| `since` | string | Não | Ref git para comparar. Exemplos: `HEAD~3`, `main`, um SHA de commit. Padrão: `HEAD~1`. |
+| `ref` | string | Não | Ref git para comparar. Exemplos: `HEAD~3`, `main`, um SHA de commit. Padrão: `HEAD`. |
 
 **Retorna**
 
@@ -636,12 +640,12 @@ Quais arquivos os últimos 3 commits alteraram, e o que mais pode ser afetado?
 
 Chamada explícita:
 ```
-detect_changes(since="HEAD~3")
+detect_changes(ref="HEAD~3")
 ```
 
 Comparar com branch main:
 ```
-detect_changes(since="main")
+detect_changes(ref="main")
 ```
 
 ---
@@ -664,6 +668,7 @@ Ferramentas multi-repositório para projetos registrados em `~/.axon/registry.js
 | Nome | Tipo | Obrigatório | Descrição |
 |------|------|-------------|-----------|
 | `file` | string | Sim | Caminho para o arquivo (absoluto ou relativo à raiz do projeto atual) cujo impacto cross-repo você quer avaliar. |
+| `group` | string | Não | Restringir a análise a um grupo de repos específico do registry. Omitir pesquisa em todos os grupos. |
 
 **Retorna**
 
@@ -748,7 +753,31 @@ Array de threads com `id`, `name`, `kind` e `created_at`.
 
 ---
 
-### 18. `session_start`
+### 18. `thread_get`
+
+**Finalidade**
+
+Retorna todas as sessões dentro de um thread, com rótulos, timestamps e digest resumido (ADF) quando disponível. Use para revisar rapidamente o histórico de trabalho de um projeto ou tópico.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `thread_id` | integer | Sim | ID do thread a inspecionar. |
+
+**Retorna**
+
+Array de sessões com `id`, `label`, `started_at`, `ended_at` e `digest` (string ADF ou `null`).
+
+**Exemplo**
+
+```
+thread_get(thread_id=1)
+```
+
+---
+
+### 19. `session_start`
 
 **Finalidade**
 
@@ -769,7 +798,7 @@ Abre uma nova sessão de trabalho dentro de um thread. Uma sessão representa um
 
 ---
 
-### 19. `session_end`
+### 20. `session_end`
 
 **Finalidade**
 
@@ -790,7 +819,7 @@ Encerra uma sessão. Opcionalmente gera um digest em Axon Digest Format (ADF) e 
 
 ---
 
-### 20. `turn_add`
+### 21. `turn_add`
 
 **Finalidade**
 
@@ -814,7 +843,7 @@ Adiciona um turn (mensagem individual do usuário ou assistente) a uma sessão. 
 
 ---
 
-### 21. `turn_search`
+### 22. `turn_search`
 
 **Finalidade**
 
@@ -836,7 +865,7 @@ Requer `AXON_EMBEDDING_MODEL` configurado.
 
 ---
 
-### 22. `session_get`
+### 23. `session_get`
 
 **Finalidade**
 
@@ -855,7 +884,7 @@ Array de turns com `id`, `role`, `content` e `ts`.
 
 ---
 
-### 23. `anchor_link`
+### 24. `anchor_link`
 
 **Finalidade**
 
@@ -878,7 +907,7 @@ Vincula manualmente um turn a um arquivo ou símbolo no grafo de dependências. 
 
 ---
 
-### 24. `dialogue_context`
+### 25. `dialogue_context`
 
 **Finalidade**
 
@@ -909,7 +938,7 @@ dialogue_context {
 
 ---
 
-### 25. `get_context_capsule` com `dialogue_budget`
+### 26. `get_context_capsule` com `dialogue_budget`
 
 A ferramenta existente `get_context_capsule` aceita um parâmetro opcional `dialogue_budget` (contagem de tokens). Quando definido, a resposta inclui um array `related_turns` — conversas anteriores ancoradas aos mesmos arquivos pivot, ordenadas por similaridade semântica, dentro do orçamento.
 
@@ -942,12 +971,14 @@ Quando `dialogue_budget=0` (padrão), o comportamento é bit-a-bit idêntico à 
 | `run_pipeline` | `root?` | Reindexação completa (raramente necessário) |
 | `index_paths` | `paths[]`, `prune?` | Atualização incremental de arquivos específicos |
 | `rename` | `symbol_name`, `new_name`, `dry_run?` | Rename seguro pelo grafo em todo o projeto |
-| `route_map` | — | Listar todos os endpoints de API |
+| `route_map` | `framework?` | Listar todos os endpoints de API (opcionalmente por framework) |
 | `api_impact` | `route_path` | Blast radius de um endpoint HTTP |
-| `detect_changes` | `since?` | O que commits recentes tocaram? |
-| `group_list` / `group_impact` | `file` (impact) | Blast radius cross-repo |
+| `detect_changes` | `ref?` | O que commits recentes tocaram? (padrão ref: HEAD) |
+| `group_list` | — | Listar todos os repos e grupos registrados |
+| `group_impact` | `file`, `group?` | Blast radius cross-repo para um arquivo |
 | `thread_create` | `name`, `kind?` | Criar escopo de conversação nomeado |
 | `thread_list` | — | Listar todos os threads |
+| `thread_get` | `thread_id` | Listar sessões de um thread com digests |
 | `session_start` | `thread_id`, `label?` | Abrir nova sessão de trabalho |
 | `session_end` | `session_id`, `compute_digest?` | Encerrar sessão; gerar digest opcionalmente |
 | `turn_add` | `session_id`, `role`, `content` | Adicionar turn; auto-ancora ao código |

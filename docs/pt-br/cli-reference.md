@@ -197,7 +197,7 @@ axon serve [--http] [--port=N] [--host=ADDR] [--group=NOME] [--all]
 
 **Descrição**
 
-Sem `--http`: inicia um servidor MCP stdio ao qual o Claude Code se conecta via o processo configurado em `~/.claude.json`. O servidor responde a requisições JSON-RPC 2.0 do Claude Code e despacha para as 15 ferramentas MCP.
+Sem `--http`: inicia um servidor MCP stdio ao qual o Claude Code se conecta via o processo configurado em `~/.claude.json`. O servidor responde a requisições JSON-RPC 2.0 do Claude Code e despacha para as 26 ferramentas MCP.
 
 Com `--http`: inicia um servidor HTTP REST API. Útil para UIs em browser, integrações externas ou testes via `curl`. Veja `docs/pt-br/configuration.md` para os endpoints REST disponíveis.
 
@@ -335,7 +335,7 @@ Exibe estatísticas do índice e informações de saúde.
 **Sintaxe**
 
 ```
-axon status
+axon status [path]
 ```
 
 **Descrição**
@@ -412,7 +412,7 @@ axon -V
 
 ```bash
 axon --version
-# → axon 0.5.5 (build a0db696)
+# → axon 1.1.1 (build a0db696)
 ```
 
 ---
