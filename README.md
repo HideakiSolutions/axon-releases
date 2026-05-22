@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-blue)](https://docs.anthropic.com/claude-code)
-[![MCP](https://img.shields.io/badge/MCP-15%20tools-8b5cf6)](https://github.com/HideakiSolutions/axon-releases)
+[![MCP](https://img.shields.io/badge/MCP-25%20tools-8b5cf6)](https://github.com/HideakiSolutions/axon-releases)
 [![Homebrew](https://img.shields.io/badge/Homebrew-tap-orange)](https://github.com/HideakiSolutions/homebrew-axon)
 [![Latest Release](https://img.shields.io/github/v/release/HideakiSolutions/axon-releases)](https://github.com/HideakiSolutions/axon-releases/releases/latest)
 
@@ -12,7 +12,7 @@
 
 **axon** is a local [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that delivers **surgical context** for AI coding agents. Instead of dumping entire files into the context window, axon builds a precise dependency graph of your codebase and assembles a token-budget-aware **context capsule** — only the pivot files and the relevant signatures of their dependencies.
 
-It integrates directly with [Claude Code](https://docs.anthropic.com/claude-code) via MCP and responds to `get_context_capsule` and 14 other tools, all serving one goal:
+It integrates directly with [Claude Code](https://docs.anthropic.com/claude-code) via MCP and responds to `get_context_capsule` and 24 other tools, all serving one goal:
 
 > **Let the agent see exactly what it needs. Nothing more.**
 
@@ -43,7 +43,7 @@ flowchart LR
 
 At index time, axon parses every file in your project using tree-sitter grammars, builds a symbol-level dependency graph, and optionally generates embeddings for semantic search — all stored locally in a DuckDB file inside `.axon/`.
 
-At query time, the agent calls `get_context_capsule` (or any of the 14 other tools). Axon performs a BFS traversal of the graph starting from the most relevant pivot files, then **skeletonizes** support files (keeping only signatures, not bodies) until the token budget is met. The result is a compact, high-signal context capsule.
+At query time, the agent calls `get_context_capsule` (or any of the 24 other tools). Axon performs a BFS traversal of the graph starting from the most relevant pivot files, then **skeletonizes** support files (keeping only signatures, not bodies) until the token budget is met. The result is a compact, high-signal context capsule.
 
 ---
 
@@ -344,7 +344,7 @@ axon-setup --download-model /path/to/your-project
 export AXON_EMBEDDING_MODEL=/path/to/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
-Without the model, all 15 tools work normally except `search_memory` and the semantic-query path of `get_context_capsule` (which falls back to graph-only traversal).
+Without the model, all 25 tools work normally except `search_memory`, `turn_search`, and the semantic-query path of `get_context_capsule` (which falls back to graph-only traversal).
 
 ### Multi-Repo Registry
 
@@ -371,13 +371,14 @@ axon serve --http --port=7070 --group=backend
 | Multi-repo blast radius | ✅ Group registry | ❌ None | ❌ None | ❌ None |
 | Skeletonization | ✅ Signatures-only fallback | ❌ None | ❌ None | ✅ Partial |
 | Works offline | ✅ Local DuckDB | ✅ | ❌ Often cloud | ✅ |
-| MCP-native | ✅ 15 tools | ❌ None | ⚠️ Adapters vary | ⚠️ Varies |
+| MCP-native | ✅ 25 tools | ❌ None | ⚠️ Adapters vary | ⚠️ Varies |
+| Conversation memory | ✅ Native Dialogue Layer | ❌ None | ❌ None | ❌ None |
 
 ---
 
 ## Roadmap
 
-- [x] 15 MCP tools with full MCP protocol compliance
+- [x] 25 MCP tools with full MCP protocol compliance
 - [x] Write-through indexing (auto-reindex after edits in Claude Code)
 - [x] Hybrid search (graph BFS + semantic embeddings)
 - [x] HTTP mode with REST API
@@ -385,6 +386,9 @@ axon serve --http --port=7070 --group=backend
 - [x] Route map and API impact analysis
 - [x] `detect_changes` — git-aware change tracking
 - [x] Graph-assisted rename
+- [x] Dialogue Layer — native conversation memory (threads, sessions, turns, anchors, digests)
+- [x] Auto-anchor — automatic code-artifact linking on `turn_add`
+- [x] `dialogue_context` and `dialogue_budget` in `get_context_capsule`
 - [ ] Language Server Protocol (LSP) integration
 - [ ] axon-web visual explorer (browser UI for graph navigation)
 - [ ] VS Code extension
@@ -428,7 +432,7 @@ MIT — see [LICENSE](LICENSE).
 
 **axon** é um servidor [MCP (Model Context Protocol)](https://modelcontextprotocol.io) local que entrega **contexto cirúrgico** para agentes de IA que trabalham com código. Em vez de despejar arquivos inteiros na janela de contexto, o axon constrói um grafo preciso de dependências do seu projeto e monta uma **cápsula de contexto** com orçamento de tokens — apenas os arquivos-pivô e as assinaturas relevantes de suas dependências.
 
-Integra-se diretamente ao [Claude Code](https://docs.anthropic.com/claude-code) via MCP e responde a `get_context_capsule` e mais 14 ferramentas, todas com um único objetivo:
+Integra-se diretamente ao [Claude Code](https://docs.anthropic.com/claude-code) via MCP e responde a `get_context_capsule` e mais 24 ferramentas, todas com um único objetivo:
 
 > **Deixar o agente ver exatamente o que precisa. Nada mais.**
 
@@ -459,7 +463,7 @@ flowchart LR
 
 Na indexação, o axon parseia todos os arquivos do projeto com grammars tree-sitter, constrói um grafo de dependências em nível de símbolo e opcionalmente gera embeddings para busca semântica — tudo armazenado localmente em um arquivo DuckDB dentro de `.axon/`.
 
-Na consulta, o agente chama `get_context_capsule` (ou qualquer uma das 14 outras ferramentas). O axon realiza um BFS no grafo a partir dos arquivos-pivô mais relevantes e **skeletoniza** os arquivos de suporte (mantendo apenas assinaturas, sem corpos de função) até atingir o orçamento de tokens. O resultado é uma cápsula de contexto compacta e de alto sinal.
+Na consulta, o agente chama `get_context_capsule` (ou qualquer uma das 24 outras ferramentas). O axon realiza um BFS no grafo a partir dos arquivos-pivô mais relevantes e **skeletoniza** os arquivos de suporte (mantendo apenas assinaturas, sem corpos de função) até atingir o orçamento de tokens. O resultado é uma cápsula de contexto compacta e de alto sinal.
 
 ---
 
@@ -756,7 +760,7 @@ axon-setup --download-model /caminho/para/seu-projeto
 export AXON_EMBEDDING_MODEL=/caminho/para/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
-Sem o modelo, todas as 15 ferramentas funcionam normalmente, exceto `search_memory` e o caminho de query semântica de `get_context_capsule` (que usa apenas travessia de grafo como fallback).
+Sem o modelo, todas as 25 ferramentas funcionam normalmente, exceto `search_memory`, `turn_search` e o caminho de query semântica de `get_context_capsule` (que usa apenas travessia de grafo como fallback).
 
 ---
 
@@ -774,13 +778,14 @@ Sem o modelo, todas as 15 ferramentas funcionam normalmente, exceto `search_memo
 | Blast radius multi-repo | ✅ Registro de grupos | ❌ Nenhum | ❌ Nenhum | ❌ Nenhum |
 | Skeletonização | ✅ Fallback só assinaturas | ❌ Nenhum | ❌ Nenhum | ✅ Parcial |
 | Funciona offline | ✅ DuckDB local | ✅ | ❌ Frequentemente na nuvem | ✅ |
-| MCP nativo | ✅ 15 ferramentas | ❌ Nenhum | ⚠️ Adaptadores variados | ⚠️ Varia |
+| MCP nativo | ✅ 25 ferramentas | ❌ Nenhum | ⚠️ Adaptadores variados | ⚠️ Varia |
+| Memória de conversação | ✅ Camada de Diálogo nativa | ❌ Nenhum | ❌ Nenhum | ❌ Nenhum |
 
 ---
 
 ## Roadmap
 
-- [x] 15 ferramentas MCP com conformidade total ao protocolo MCP
+- [x] 25 ferramentas MCP com conformidade total ao protocolo MCP
 - [x] Indexação write-through (reindexação automática após edições no Claude Code)
 - [x] Busca híbrida (BFS no grafo + embeddings semânticos)
 - [x] Modo HTTP com API REST
@@ -788,6 +793,9 @@ Sem o modelo, todas as 15 ferramentas funcionam normalmente, exceto `search_memo
 - [x] Route map e análise de impacto de API
 - [x] `detect_changes` — rastreamento de mudanças via git
 - [x] Rename assistido pelo grafo
+- [x] Camada de Diálogo — memória nativa de conversação (threads, sessões, turns, âncoras, digests)
+- [x] Auto-anchor — vinculação automática a artefatos de código no `turn_add`
+- [x] `dialogue_context` e `dialogue_budget` no `get_context_capsule`
 - [ ] Integração com Language Server Protocol (LSP)
 - [ ] axon-web — explorador visual (UI no browser para navegação no grafo)
 - [ ] Extensão para VS Code

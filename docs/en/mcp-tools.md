@@ -1,6 +1,6 @@
 # MCP Tools Reference
 
-axon exposes 15 MCP tools to Claude Code via the JSON-RPC 2.0 protocol. Each tool is documented below with its purpose, parameters, return value, recommended usage scenario, and a concrete example.
+axon exposes 25 MCP tools to Claude Code via the JSON-RPC 2.0 protocol. Each tool is documented below with its purpose, parameters, return value, recommended usage scenario, and a concrete example.
 
 Claude Code invokes these tools automatically based on context. You can also trigger them explicitly by describing what you want in natural language.
 
@@ -19,6 +19,11 @@ graph TD
     DC[detect_changes\nGit diff trace] --> CC
     GL[group_list] --> GI[group_impact\nMulti-repo]
     RN[rename\nGraph-safe] --> CC
+    TC[thread_create\nConversation scope] --> SS[session_start]
+    SS --> TA[turn_add\nAuto-anchor]
+    TA --> TS[turn_search\nSemantic recall]
+    TA --> DC2[dialogue_context\nCode-linked turns]
+    DC2 --> CC
 ```
 
 ---
@@ -700,6 +705,310 @@ Repos must be indexed individually before they appear in `group_list`. Running `
 
 ---
 
+## Dialogue Layer Tools
+
+Axon stores conversation history natively in the same DuckDB database used for code context, using the same embedding pipeline and the same token-budget model.
+
+---
+
+### 16. `thread_create`
+
+**Purpose**
+
+Creates a named conversation scope — a project, person, or topic — that groups related sessions together.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | string | Yes | Human-readable name for the thread. |
+| `kind` | string | No | One of `project`, `person`, or `topic`. Defaults to `topic`. |
+
+**Returns**
+
+```json
+{ "thread_id": 1 }
+```
+
+**When to Use**
+
+- At the start of a new project to group all coding sessions under one thread.
+- When working with a recurring collaborator or reviewing a specific topic.
+
+**Example**
+
+```
+thread_create { "name": "auth-module", "kind": "project" }
+```
+
+---
+
+### 17. `thread_list`
+
+**Purpose**
+
+Lists all threads registered in the project database.
+
+**Parameters**
+
+None.
+
+**Returns**
+
+Array of threads with `id`, `name`, `kind`, and `created_at`.
+
+**When to Use**
+
+- To discover existing threads before starting a new session.
+- To pick up a thread from a previous working day.
+
+---
+
+### 18. `session_start`
+
+**Purpose**
+
+Opens a new working session within a thread. A session represents a bounded working window (e.g., a coding sprint, a debugging session).
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `thread_id` | integer | Yes | ID of the parent thread. |
+| `label` | string | No | Human-readable label for this session. |
+
+**Returns**
+
+```json
+{ "session_id": 1 }
+```
+
+**When to Use**
+
+- At the start of a new Claude Code session within a known thread.
+
+**Example**
+
+```
+session_start { "thread_id": 1, "label": "Token TTL review" }
+```
+
+---
+
+### 19. `session_end`
+
+**Purpose**
+
+Closes a session. Optionally generates a rule-based digest in Axon Digest Format (ADF) and embeds it for future semantic search.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `session_id` | integer | Yes | ID of the session to close. |
+| `compute_digest` | boolean | No | If `true` (and an embedding model is configured), generates a compressed digest of all turns and stores it embedded. Default: `false`. |
+
+**Returns**
+
+```json
+{ "ok": true, "digest_length": 1247 }
+```
+
+**When to Use**
+
+- At the end of every coding session where you want past context to be searchable.
+
+---
+
+### 20. `turn_add`
+
+**Purpose**
+
+Appends a turn (a single user or assistant message) to a session. Automatically anchors the turn to code artifacts it mentions.
+
+**Auto-anchor**: axon scans the turn content for file path patterns and symbol names from the top-500 most-referenced symbols. Matches are linked via `turn_anchors` — no manual work required.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `session_id` | integer | Yes | ID of the parent session. |
+| `role` | string | Yes | `user` or `assistant`. |
+| `content` | string | Yes | Verbatim turn content. |
+
+**Returns**
+
+```json
+{ "turn_id": 42, "anchors": 2 }
+```
+
+**When to Use**
+
+- After every exchange to persist the conversation in axon's searchable store.
+
+**Example**
+
+```
+turn_add { "session_id": 1, "role": "user", "content": "The TTL for auth/token.ts must be 7 days." }
+```
+
+---
+
+### 21. `turn_search`
+
+**Purpose**
+
+Semantic search over all stored turns, optionally scoped to a specific thread. Returns ranked results by cosine similarity.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `query` | string | Yes | Natural-language query. |
+| `limit` | integer | No | Max results to return. Default: 5. |
+| `thread_id` | integer | No | Restrict results to a specific thread. |
+
+**Returns**
+
+Array of turns with `id`, `role`, `content`, `session_id`, `score`, and `ts`.
+
+**When to Use**
+
+- To recall past decisions or constraints before starting related work.
+- To avoid re-discussing already-resolved questions.
+
+**Example**
+
+```
+turn_search { "query": "auth token TTL", "limit": 5 }
+```
+
+Requires `AXON_EMBEDDING_MODEL` to be configured.
+
+---
+
+### 22. `session_get`
+
+**Purpose**
+
+Retrieves all turns for a session in chronological order.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `session_id` | integer | Yes | ID of the session to retrieve. |
+| `limit` | integer | No | Max turns to return. Default: 100. |
+
+**Returns**
+
+Array of turns with `id`, `role`, `content`, and `ts`.
+
+**When to Use**
+
+- To replay a past session before continuing related work.
+
+---
+
+### 23. `anchor_link`
+
+**Purpose**
+
+Manually links a turn to a file or symbol in the dependency graph. Useful when auto-anchor does not detect an implicit reference.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `turn_id` | integer | Yes | ID of the turn to anchor. |
+| `file_id` | integer | No | ID of the file to link (from the `files` table). |
+| `symbol_id` | integer | No | ID of the symbol to link (from the `symbols` table). |
+| `kind` | string | No | Anchor kind: `reference` (default), `edit`, `decision`. |
+
+**Returns**
+
+```json
+{ "anchor_id": 7 }
+```
+
+**When to Use**
+
+- When a turn discusses a component without naming it explicitly.
+- To mark a turn as a decision that relates to a specific symbol.
+
+---
+
+### 24. `dialogue_context`
+
+**Purpose**
+
+Returns past turns related to given file paths or a semantic query — ranked by relevance, within a token budget. The primary tool for injecting conversation memory into the current context window.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `query` | string | Yes | Natural-language query to rank results. |
+| `file_paths` | string[] | No | Restrict to turns anchored to these files. |
+| `limit` | integer | No | Max turns to return. Default: 10. |
+| `thread_id` | integer | No | Restrict to a specific thread. |
+
+**Returns**
+
+Array of turns with `id`, `role`, `content`, `session_label`, `thread_name`, `score`, and `ts`.
+
+**When to Use**
+
+- Before editing a file: get all past decisions and constraints about it.
+- As a lightweight alternative to `get_context_capsule` when code context is not needed.
+
+**Example**
+
+```
+dialogue_context {
+  "query": "auth token TTL decision",
+  "file_paths": ["src/auth/token.ts"],
+  "limit": 5
+}
+```
+
+---
+
+### 25. `get_context_capsule` with `dialogue_budget`
+
+The existing `get_context_capsule` tool accepts an optional `dialogue_budget` parameter (token count). When set, the response includes a `related_turns` array — past conversations anchored to the same pivot files, ranked by semantic similarity, within budget.
+
+**Example**
+
+```
+get_context_capsule {
+  "query": "auth token TTL",
+  "pivot_files": ["src/auth/token.ts"],
+  "dialogue_budget": 1000
+}
+```
+
+Response includes:
+```json
+{
+  "pivot_files": [...],
+  "support_files": [...],
+  "related_turns": [
+    {
+      "role": "user",
+      "content": "The TTL for auth/token.ts must be 7 days",
+      "session_label": "Token TTL review",
+      "thread_name": "auth-module",
+      "ts": "2025-01-10T09:15:00"
+    }
+  ]
+}
+```
+
+When `dialogue_budget=0` (default), behavior is bit-for-bit identical to the previous version.
+
+---
+
 ## Tool Quick Reference
 
 | Tool | Key Parameters | Primary Use Case |
@@ -719,3 +1028,12 @@ Repos must be indexed individually before they appear in `group_list`. Running `
 | `api_impact` | `route_path` | Blast radius for an HTTP endpoint |
 | `detect_changes` | `since?` | What did recent commits touch? |
 | `group_list` / `group_impact` | `file` (impact) | Cross-repo blast radius |
+| `thread_create` | `name`, `kind?` | Create a named conversation scope |
+| `thread_list` | — | List all threads |
+| `session_start` | `thread_id`, `label?` | Open a new working session |
+| `session_end` | `session_id`, `compute_digest?` | Close session; optionally generate digest |
+| `turn_add` | `session_id`, `role`, `content` | Append a turn; auto-anchors to code |
+| `turn_search` | `query`, `limit?`, `thread_id?` | Semantic search over all turns |
+| `session_get` | `session_id`, `limit?` | Retrieve turns for a session |
+| `anchor_link` | `turn_id`, `file_id?`, `symbol_id?`, `kind?` | Manually link turn to code |
+| `dialogue_context` | `query`, `file_paths?[]`, `limit?`, `thread_id?` | Past turns related to files or query |

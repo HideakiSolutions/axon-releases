@@ -1,6 +1,6 @@
 # Referência de Ferramentas MCP
 
-O axon expõe 15 ferramentas MCP ao Claude Code via protocolo JSON-RPC 2.0. Cada ferramenta está documentada abaixo com sua finalidade, parâmetros, valor de retorno, cenário de uso recomendado e um exemplo concreto.
+O axon expõe 25 ferramentas MCP ao Claude Code via protocolo JSON-RPC 2.0. Cada ferramenta está documentada abaixo com sua finalidade, parâmetros, valor de retorno, cenário de uso recomendado e um exemplo concreto.
 
 O Claude Code invoca essas ferramentas automaticamente com base no contexto. Você também pode acioná-las explicitamente descrevendo o que deseja em linguagem natural.
 
@@ -700,6 +700,233 @@ Os repos precisam ser indexados individualmente antes de aparecerem em `group_li
 
 ---
 
+## Ferramentas da Camada de Diálogo
+
+O axon armazena o histórico de conversas nativamente no mesmo banco DuckDB usado para contexto de código, utilizando o mesmo pipeline de embeddings e o mesmo modelo de orçamento de tokens.
+
+---
+
+### 16. `thread_create`
+
+**Finalidade**
+
+Cria um escopo de conversação nomeado — um projeto, pessoa ou tópico — que agrupa sessões relacionadas.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `name` | string | Sim | Nome legível para o thread. |
+| `kind` | string | Não | Um de `project`, `person` ou `topic`. Padrão: `topic`. |
+
+**Retorna**
+
+```json
+{ "thread_id": 1 }
+```
+
+**Quando Usar**
+
+- Ao iniciar um novo projeto para agrupar todas as sessões de trabalho em um thread.
+- Ao trabalhar com um colaborador recorrente ou revisar um tópico específico.
+
+---
+
+### 17. `thread_list`
+
+**Finalidade**
+
+Lista todos os threads registrados no banco do projeto.
+
+**Parâmetros**
+
+Nenhum.
+
+**Retorna**
+
+Array de threads com `id`, `name`, `kind` e `created_at`.
+
+---
+
+### 18. `session_start`
+
+**Finalidade**
+
+Abre uma nova sessão de trabalho dentro de um thread. Uma sessão representa uma janela de trabalho delimitada (ex.: um sprint de codificação, uma sessão de debug).
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `thread_id` | integer | Sim | ID do thread pai. |
+| `label` | string | Não | Rótulo legível para esta sessão. |
+
+**Retorna**
+
+```json
+{ "session_id": 1 }
+```
+
+---
+
+### 19. `session_end`
+
+**Finalidade**
+
+Encerra uma sessão. Opcionalmente gera um digest em Axon Digest Format (ADF) e o embede para busca semântica futura.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `session_id` | integer | Sim | ID da sessão a encerrar. |
+| `compute_digest` | boolean | Não | Se `true` (e modelo de embedding configurado), gera digest comprimido de todos os turns. Padrão: `false`. |
+
+**Retorna**
+
+```json
+{ "ok": true, "digest_length": 1247 }
+```
+
+---
+
+### 20. `turn_add`
+
+**Finalidade**
+
+Adiciona um turn (mensagem individual do usuário ou assistente) a uma sessão. Ancora automaticamente o turn a artefatos de código mencionados.
+
+**Auto-anchor**: o axon escaneia o conteúdo do turn em busca de padrões de caminho de arquivo e nomes de símbolos do top-500 mais referenciados. Matches são vinculados via `turn_anchors` — sem trabalho manual.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `session_id` | integer | Sim | ID da sessão pai. |
+| `role` | string | Sim | `user` ou `assistant`. |
+| `content` | string | Sim | Conteúdo verbatim do turn. |
+
+**Retorna**
+
+```json
+{ "turn_id": 42, "anchors": 2 }
+```
+
+---
+
+### 21. `turn_search`
+
+**Finalidade**
+
+Busca semântica sobre todos os turns armazenados, opcionalmente restrita a um thread específico. Retorna resultados ordenados por similaridade de cosseno.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `query` | string | Sim | Consulta em linguagem natural. |
+| `limit` | integer | Não | Máximo de resultados. Padrão: 5. |
+| `thread_id` | integer | Não | Restringir resultados a um thread específico. |
+
+**Retorna**
+
+Array de turns com `id`, `role`, `content`, `session_id`, `score` e `ts`.
+
+Requer `AXON_EMBEDDING_MODEL` configurado.
+
+---
+
+### 22. `session_get`
+
+**Finalidade**
+
+Recupera todos os turns de uma sessão em ordem cronológica.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `session_id` | integer | Sim | ID da sessão a recuperar. |
+| `limit` | integer | Não | Máximo de turns. Padrão: 100. |
+
+**Retorna**
+
+Array de turns com `id`, `role`, `content` e `ts`.
+
+---
+
+### 23. `anchor_link`
+
+**Finalidade**
+
+Vincula manualmente um turn a um arquivo ou símbolo no grafo de dependências. Útil quando o auto-anchor não detecta uma referência implícita.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `turn_id` | integer | Sim | ID do turn a ancorar. |
+| `file_id` | integer | Não | ID do arquivo a vincular. |
+| `symbol_id` | integer | Não | ID do símbolo a vincular. |
+| `kind` | string | Não | Tipo de âncora: `reference` (padrão), `edit`, `decision`. |
+
+**Retorna**
+
+```json
+{ "anchor_id": 7 }
+```
+
+---
+
+### 24. `dialogue_context`
+
+**Finalidade**
+
+Retorna turns anteriores relacionados a caminhos de arquivo ou a uma consulta semântica — ordenados por relevância, dentro de um orçamento de tokens. Ferramenta principal para injetar memória de conversação na janela de contexto atual.
+
+**Parâmetros**
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `query` | string | Sim | Consulta em linguagem natural. |
+| `file_paths` | string[] | Não | Restringir a turns ancorados a estes arquivos. |
+| `limit` | integer | Não | Máximo de turns. Padrão: 10. |
+| `thread_id` | integer | Não | Restringir a um thread específico. |
+
+**Retorna**
+
+Array de turns com `id`, `role`, `content`, `session_label`, `thread_name`, `score` e `ts`.
+
+**Exemplo**
+
+```
+dialogue_context {
+  "query": "decisão sobre TTL do token de auth",
+  "file_paths": ["src/auth/token.ts"],
+  "limit": 5
+}
+```
+
+---
+
+### 25. `get_context_capsule` com `dialogue_budget`
+
+A ferramenta existente `get_context_capsule` aceita um parâmetro opcional `dialogue_budget` (contagem de tokens). Quando definido, a resposta inclui um array `related_turns` — conversas anteriores ancoradas aos mesmos arquivos pivot, ordenadas por similaridade semântica, dentro do orçamento.
+
+**Exemplo**
+
+```
+get_context_capsule {
+  "query": "TTL do token de auth",
+  "pivot_files": ["src/auth/token.ts"],
+  "dialogue_budget": 1000
+}
+```
+
+Quando `dialogue_budget=0` (padrão), o comportamento é bit-a-bit idêntico à versão anterior.
+
+---
+
 ## Referência Rápida de Ferramentas
 
 | Ferramenta | Parâmetros Principais | Caso de Uso Principal |
@@ -719,3 +946,12 @@ Os repos precisam ser indexados individualmente antes de aparecerem em `group_li
 | `api_impact` | `route_path` | Blast radius de um endpoint HTTP |
 | `detect_changes` | `since?` | O que commits recentes tocaram? |
 | `group_list` / `group_impact` | `file` (impact) | Blast radius cross-repo |
+| `thread_create` | `name`, `kind?` | Criar escopo de conversação nomeado |
+| `thread_list` | — | Listar todos os threads |
+| `session_start` | `thread_id`, `label?` | Abrir nova sessão de trabalho |
+| `session_end` | `session_id`, `compute_digest?` | Encerrar sessão; gerar digest opcionalmente |
+| `turn_add` | `session_id`, `role`, `content` | Adicionar turn; auto-ancora ao código |
+| `turn_search` | `query`, `limit?`, `thread_id?` | Busca semântica sobre todos os turns |
+| `session_get` | `session_id`, `limit?` | Recuperar turns de uma sessão |
+| `anchor_link` | `turn_id`, `file_id?`, `symbol_id?`, `kind?` | Vincular turn ao código manualmente |
+| `dialogue_context` | `query`, `file_paths?[]`, `limit?`, `thread_id?` | Turns anteriores relacionados a arquivos ou consulta |
