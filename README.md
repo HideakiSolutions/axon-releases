@@ -419,16 +419,14 @@ axon serve --http --port=7070 --group=backend
 - [ ] Support for additional languages (Ruby, Swift, Scala)
 - [ ] Watch mode (continuous background indexing)
 
-**Release packaging note:** LSP integration, `axon-web`, VS Code watch support,
-Ruby/Swift/Scala parser hardening, and structured watch events are being prepared
-in `code-review-graph` PR
-[#509](https://github.com/tirth8205/code-review-graph/pull/509). The
-`axon-releases` repository currently contains release documentation and binary
-artifacts only; it does not contain the source tree or build scripts needed to
-produce fresh installers. Do not publish new installers from this repository
-until a rebuilt axon binary that includes these commands is available. The latest
-tracked Linux artifact is `dist/axon-1.1.0-linux-x64.tar.gz`, and that binary
-does not expose `axon web` or `axon lsp`.
+**Release packaging note:** Installers are generated from the private
+`HideakiSolutions/axon` source repository by `.github/workflows/release.yml` and
+published here. This repository is the public release/artifact target. The latest
+tracked Linux artifact is `dist/axon-1.1.0-linux-x64.tar.gz`; that binary exposes
+the current C++ axon CLI (`axon serve --http` for the web API) and does not yet
+expose standalone `axon web` or `axon lsp` commands. When those commands land in
+the `axon` source tree, cut a new tag there and let the release workflow publish
+fresh Linux, macOS, and Windows installers into this repository.
 
 ---
 
@@ -861,17 +859,15 @@ Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memo
 - [ ] Suporte a linguagens adicionais (Ruby, Swift, Scala)
 - [ ] Modo watch (indexação contínua em background)
 
-**Nota de empacotamento:** integração LSP, `axon-web`, suporte de watch no VS Code,
-hardening dos parsers Ruby/Swift/Scala e eventos estruturados do modo watch estão
-sendo preparados no PR
-[#509](https://github.com/tirth8205/code-review-graph/pull/509) de
-`code-review-graph`. O repositório `axon-releases` contém hoje documentação de
-release e artefatos binários; ele não contém a árvore fonte nem scripts de build
-necessários para produzir instaladores novos. Não publique novos instaladores a
-partir deste repositório até existir um binário axon recompilado com esses
-comandos. O artefato Linux rastreado mais recente é
-`dist/axon-1.1.0-linux-x64.tar.gz`, e esse binário não expõe `axon web` nem
-`axon lsp`.
+**Nota de empacotamento:** os instaladores são gerados a partir do repositório
+fonte privado `HideakiSolutions/axon` pelo workflow
+`.github/workflows/release.yml` e publicados aqui. Este repositório é o alvo
+público de releases/artefatos. O artefato Linux rastreado mais recente é
+`dist/axon-1.1.0-linux-x64.tar.gz`; esse binário expõe a CLI C++ atual do axon
+(`axon serve --http` para a API web) e ainda não expõe comandos standalone
+`axon web` ou `axon lsp`. Quando esses comandos entrarem na árvore fonte do
+`axon`, gere uma nova tag lá e deixe o workflow publicar novos instaladores
+Linux, macOS e Windows neste repositório.
 
 ---
 

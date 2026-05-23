@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Added release-packaging guidance for the pending LSP, `axon-web`, VS Code watch,
-  Ruby/Swift/Scala parser hardening, and structured watch-events work tracked in
-  `code-review-graph` PR #509.
-- Clarified that this repository currently contains release documentation and
-  binary artifacts only, so new installers must wait for a rebuilt axon binary
-  that exposes the new commands.
+- Added release-packaging guidance clarifying that installers are generated from
+  the private `HideakiSolutions/axon` source repository by
+  `.github/workflows/release.yml` and published here.
+- Clarified that the current tracked Linux artifact exposes `axon serve --http`
+  for the web API, but does not yet expose standalone `axon web` or `axon lsp`
+  commands.
 
 ## [1.1.0] — 2026-05-22
 
