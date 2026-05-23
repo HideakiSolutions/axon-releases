@@ -419,6 +419,17 @@ axon serve --http --port=7070 --group=backend
 - [ ] Support for additional languages (Ruby, Swift, Scala)
 - [ ] Watch mode (continuous background indexing)
 
+**Release packaging note:** LSP integration, `axon-web`, VS Code watch support,
+Ruby/Swift/Scala parser hardening, and structured watch events are being prepared
+in `code-review-graph` PR
+[#509](https://github.com/tirth8205/code-review-graph/pull/509). The
+`axon-releases` repository currently contains release documentation and binary
+artifacts only; it does not contain the source tree or build scripts needed to
+produce fresh installers. Do not publish new installers from this repository
+until a rebuilt axon binary that includes these commands is available. The latest
+tracked Linux artifact is `dist/axon-1.1.0-linux-x64.tar.gz`, and that binary
+does not expose `axon web` or `axon lsp`.
+
 ---
 
 ## Documentation
@@ -849,6 +860,18 @@ Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memo
 - [ ] Extensão para VS Code
 - [ ] Suporte a linguagens adicionais (Ruby, Swift, Scala)
 - [ ] Modo watch (indexação contínua em background)
+
+**Nota de empacotamento:** integração LSP, `axon-web`, suporte de watch no VS Code,
+hardening dos parsers Ruby/Swift/Scala e eventos estruturados do modo watch estão
+sendo preparados no PR
+[#509](https://github.com/tirth8205/code-review-graph/pull/509) de
+`code-review-graph`. O repositório `axon-releases` contém hoje documentação de
+release e artefatos binários; ele não contém a árvore fonte nem scripts de build
+necessários para produzir instaladores novos. Não publique novos instaladores a
+partir deste repositório até existir um binário axon recompilado com esses
+comandos. O artefato Linux rastreado mais recente é
+`dist/axon-1.1.0-linux-x64.tar.gz`, e esse binário não expõe `axon web` nem
+`axon lsp`.
 
 ---
 
