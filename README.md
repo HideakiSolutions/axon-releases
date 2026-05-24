@@ -99,7 +99,7 @@ Download the latest release from [GitHub Releases](https://github.com/HideakiSol
 **Linux x86-64 example:**
 
 ```bash
-VERSION=1.1.1
+VERSION=1.1.2
 curl -L -o axon.tar.gz \
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
 tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
@@ -109,7 +109,7 @@ tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
 ### Windows x64 — Direct download
 
 ```powershell
-$VERSION = "1.1.1"
+$VERSION = "1.1.2"
 Invoke-WebRequest `
   "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
   -OutFile "axon.zip"
@@ -146,8 +146,8 @@ axon status
 # 3. Start MCP server (Claude Code connects automatically)
 axon serve
 
-# 4. Optional: HTTP mode for browser UI or external integrations
-axon serve --http --port=7070
+# 4. Optional: browser graph explorer + HTTP API
+axon web --port=7070
 ```
 
 ---
@@ -316,19 +316,22 @@ group_list()
 
 ---
 
-## HTTP Mode
+## Web and HTTP Mode
 
 Run axon as an HTTP server for browser-based UIs or external integrations:
 
 ```bash
-# Single indexed project
-axon serve --http --port=7070
+# Single indexed project with built-in browser graph explorer
+axon web --port=7070
 
 # All registered repos
-axon serve --http --port=7070 --all
+axon web --port=7070 --all
 
 # Specific group (multi-repo registry)
-axon serve --http --port=7070 --group=backend
+axon web --port=7070 --group=backend
+
+# REST API only, compatible with older axon-web frontends
+axon serve --http --port=7070
 ```
 
 ### REST Endpoints
@@ -413,20 +416,17 @@ axon serve --http --port=7070 --group=backend
 - [x] Dialogue Layer — native conversation memory (threads, sessions, turns, anchors, digests)
 - [x] Auto-anchor — automatic code-artifact linking on `turn_add`
 - [x] `dialogue_context` and `dialogue_budget` in `get_context_capsule`
-- [ ] Language Server Protocol (LSP) integration
-- [ ] axon-web visual explorer (browser UI for graph navigation)
+- [x] Language Server Protocol (LSP) integration (`axon lsp`)
+- [x] Built-in web visual explorer (`axon web`)
 - [ ] VS Code extension
 - [ ] Support for additional languages (Ruby, Swift, Scala)
 - [ ] Watch mode (continuous background indexing)
 
 **Release packaging note:** Installers are generated from the private
 `HideakiSolutions/axon` source repository by `.github/workflows/release.yml` and
-published here. This repository is the public release/artifact target. The latest
-tracked Linux artifact is `dist/axon-1.1.0-linux-x64.tar.gz`; that binary exposes
-the current C++ axon CLI (`axon serve --http` for the web API) and does not yet
-expose standalone `axon web` or `axon lsp` commands. When those commands land in
-the `axon` source tree, cut a new tag there and let the release workflow publish
-fresh Linux, macOS, and Windows installers into this repository.
+published here. This repository is the public release/artifact target. Release
+`v1.1.2` includes Linux, macOS, and Windows installers exposing `axon web` and
+`axon lsp` in the native C++ CLI.
 
 ---
 
@@ -599,8 +599,8 @@ axon status
 # 3. Iniciar servidor MCP (Claude Code conecta automaticamente)
 axon serve
 
-# 4. Opcional: modo HTTP para UI no browser ou integrações externas
-axon serve --http --port=7070
+# 4. Opcional: explorador visual no browser + API HTTP
+axon web --port=7070
 ```
 
 ---
@@ -767,17 +767,20 @@ group_list()
 
 ---
 
-## Modo HTTP
+## Modo Web e HTTP
 
 ```bash
-# Projeto único indexado
-axon serve --http --port=7070
+# Projeto único indexado com explorador visual embutido
+axon web --port=7070
 
 # Todos os repositórios registrados
-axon serve --http --port=7070 --all
+axon web --port=7070 --all
 
 # Grupo específico (registro multi-repo)
-axon serve --http --port=7070 --group=backend
+axon web --port=7070 --group=backend
+
+# Apenas API REST, compatível com frontends axon-web antigos
+axon serve --http --port=7070
 ```
 
 ### Endpoints REST
@@ -853,8 +856,8 @@ Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memo
 - [x] Camada de Diálogo — memória nativa de conversação (threads, sessões, turns, âncoras, digests)
 - [x] Auto-anchor — vinculação automática a artefatos de código no `turn_add`
 - [x] `dialogue_context` e `dialogue_budget` no `get_context_capsule`
-- [ ] Integração com Language Server Protocol (LSP)
-- [ ] axon-web — explorador visual (UI no browser para navegação no grafo)
+- [x] Integração com Language Server Protocol (LSP) (`axon lsp`)
+- [x] Explorador visual web embutido (`axon web`)
 - [ ] Extensão para VS Code
 - [ ] Suporte a linguagens adicionais (Ruby, Swift, Scala)
 - [ ] Modo watch (indexação contínua em background)
@@ -862,12 +865,8 @@ Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memo
 **Nota de empacotamento:** os instaladores são gerados a partir do repositório
 fonte privado `HideakiSolutions/axon` pelo workflow
 `.github/workflows/release.yml` e publicados aqui. Este repositório é o alvo
-público de releases/artefatos. O artefato Linux rastreado mais recente é
-`dist/axon-1.1.0-linux-x64.tar.gz`; esse binário expõe a CLI C++ atual do axon
-(`axon serve --http` para a API web) e ainda não expõe comandos standalone
-`axon web` ou `axon lsp`. Quando esses comandos entrarem na árvore fonte do
-`axon`, gere uma nova tag lá e deixe o workflow publicar novos instaladores
-Linux, macOS e Windows neste repositório.
+público de releases/artefatos. A release `v1.1.2` inclui instaladores Linux,
+macOS e Windows expondo `axon web` e `axon lsp` na CLI C++ nativa.
 
 ---
 

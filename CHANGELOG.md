@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] — 2026-05-24
+
+### Added
+
+- Published Linux, macOS, and Windows installers for axon `v1.1.2`.
+- Native C++ CLI now exposes `axon web` for the browser graph explorer and
+  HTTP API, plus `axon lsp` for Language Server Protocol editor integration.
+
+### Changed
+
+- Updated release documentation and examples to use `v1.1.2` and `axon web`.
+- Release assets were created from the successful build artifacts after the
+  workflow publish step hit a transient GitHub API rate limit.
+
+## [1.1.1-docs] — 2026-05-23
+
 ### Documentation
 
 - Added release-packaging guidance clarifying that installers are generated from
