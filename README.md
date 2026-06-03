@@ -75,7 +75,7 @@ flowchart LR
     A[What's your OS?] --> B{macOS/Linux?}
     B -->|Yes| C[brew tap + brew install\n~2 minutes]
     B -->|No - Windows| D[Download .zip\nrun install.ps1\n~3 minutes]
-    C --> E[axon-setup /your/project]
+    C --> E[./install.sh /your/project]
     D --> E
     E --> F[axon index]
     F --> G[axon serve]
@@ -87,34 +87,48 @@ flowchart LR
 ```bash
 brew tap HideakiSolutions/axon
 brew install axon
-axon-setup /path/to/your-project
 ```
 
-`axon-setup` indexes your project, downloads the embedding model (optional), and registers the MCP server with Claude Code automatically.
+After `brew install`, the installer script is available at the formula's share directory. Run it to index your project, download the embedding model (~80 MB, downloaded by default), and register the MCP server with Claude Code automatically:
+
+```bash
+./install.sh /path/to/your-project
+```
+
+> To skip model download: `AXON_DOWNLOAD_MODEL=0 ./install.sh /path/to/your-project`
 
 ### Direct Download
 
-Download the latest release from [GitHub Releases](https://github.com/HideakiSolutions/axon-releases/releases/latest).
+Download the latest release from the **[GitHub Releases page](https://github.com/HideakiSolutions/axon-releases/releases/latest)** — pick the file for your platform.
 
-**Linux x86-64 example:**
+**Linux x86-64:**
 
 ```bash
-VERSION=1.1.2
-curl -L -o axon.tar.gz \
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
-tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
+curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-linux-x64.tar.gz
+tar xzf axon.tar.gz && cd axon-*-linux-x64
 ./install.sh /path/to/your-project
 ```
+
+**macOS Apple Silicon:**
+
+```bash
+curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-macos-arm64.tar.gz
+tar xzf axon.tar.gz && cd axon-*-macos-arm64
+./install.sh /path/to/your-project
+```
+
+`install.sh` copies the binary to your PATH, installs hooks, writes `<project>/.claude/settings.json`, indexes your project, downloads the embedding model (~80 MB) by default, and registers the MCP server in Claude Code via `claude mcp add-json axon ... --scope user`. If the `claude` CLI is not in PATH, it prints the JSON block to paste into `~/.claude.json` manually.
+
+> To skip model download: `AXON_DOWNLOAD_MODEL=0 ./install.sh /path/to/your-project`
 
 ### Windows x64 — Direct download
 
 ```powershell
-$VERSION = "1.1.2"
 Invoke-WebRequest `
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
+  "https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-windows-x64.zip" `
   -OutFile "axon.zip"
-Expand-Archive axon.zip -DestinationPath "axon-$VERSION-windows-x64"
-cd "axon-$VERSION-windows-x64"
+Expand-Archive axon.zip -DestinationPath axon-windows-x64
+cd axon-windows-x64
 .\install.ps1 C:\path\to\your-project
 ```
 
@@ -128,9 +142,9 @@ $env:PATH += ";$(Resolve-Path bin)"
 
 | Platform | File |
 |----------|------|
-| Linux x86-64 | `axon-X.Y.Z-linux-x64.tar.gz` |
-| macOS Apple Silicon | `axon-X.Y.Z-macos-arm64.tar.gz` |
-| Windows x64 | `axon-X.Y.Z-windows-x64.zip` |
+| Linux x86-64 | `axon-linux-x64.tar.gz` |
+| macOS Apple Silicon | `axon-macos-arm64.tar.gz` |
+| Windows x64 | `axon-windows-x64.zip` |
 
 ---
 
@@ -154,7 +168,9 @@ axon web --port=7070
 
 ## Claude Code Integration
 
-After running `axon-setup`, the MCP server is already registered. To configure manually, add to `~/.claude.json`:
+After running `install.sh` (or `install.ps1`), the MCP server is already registered via `claude mcp add-json axon ... --scope user`. If the `claude` CLI was not in PATH at install time, the installer prints the JSON block to paste manually into `~/.claude.json`.
+
+To configure manually, add to `~/.claude.json`:
 
 ```json
 {
@@ -361,13 +377,17 @@ axon serve --http --port=7070
 granularity = "symbol"   # default: "file" — enables call-level edges for finer impact graphs
 ```
 
-### Embedding Model (optional — enables semantic search)
+### Embedding Model (downloaded by default)
+
+The installer downloads `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB) automatically. To opt out:
 
 ```bash
-# Download model during setup
-axon-setup --download-model /path/to/your-project
+AXON_DOWNLOAD_MODEL=0 ./install.sh /path/to/your-project
+```
 
-# Or point to an existing model
+To use your own model file:
+
+```bash
 export AXON_EMBEDDING_MODEL=/path/to/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
@@ -424,9 +444,11 @@ axon serve --http --port=7070 --group=backend
 
 **Release packaging note:** Installers are generated from the private
 `HideakiSolutions/axon` source repository by `.github/workflows/release.yml` and
-published here. This repository is the public release/artifact target. Release
-`v1.1.2` includes Linux, macOS, and Windows installers exposing `axon web` and
-`axon lsp` in the native C++ CLI.
+published here. This repository is the public release/artifact target. The latest
+release (`v1.2.3`) includes Linux, macOS, and Windows installers exposing `axon web`
+and `axon lsp` in the native C++ CLI. Always download from
+[releases/latest](https://github.com/HideakiSolutions/axon-releases/releases/latest)
+to get the current version without pinning a version number.
 
 ---
 
@@ -528,7 +550,7 @@ flowchart LR
     A[Qual seu SO?] --> B{macOS/Linux?}
     B -->|Sim| C[brew tap + brew install\n~2 minutos]
     B -->|Não - Windows| D[Download .zip\nexecutar install.ps1\n~3 minutos]
-    C --> E[axon-setup /seu/projeto]
+    C --> E[./install.sh /seu/projeto]
     D --> E
     E --> F[axon index]
     F --> G[axon serve]
@@ -540,34 +562,48 @@ flowchart LR
 ```bash
 brew tap HideakiSolutions/axon
 brew install axon
-axon-setup /caminho/para/seu-projeto
 ```
 
-O `axon-setup` indexa o projeto, baixa o modelo de embeddings (opcional) e registra o servidor MCP no Claude Code automaticamente.
+Após o `brew install`, execute o script de instalação para indexar seu projeto, baixar o modelo de embeddings (~80 MB, baixado por padrão) e registrar o servidor MCP no Claude Code automaticamente:
+
+```bash
+./install.sh /caminho/para/seu-projeto
+```
+
+> Para pular o download do modelo: `AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto`
 
 ### Download Direto
 
-Baixe a versão mais recente em [GitHub Releases](https://github.com/HideakiSolutions/axon-releases/releases/latest).
+Baixe a versão mais recente na **[página de Releases do GitHub](https://github.com/HideakiSolutions/axon-releases/releases/latest)** — escolha o arquivo da sua plataforma.
 
-**Exemplo Linux x86-64:**
+**Linux x86-64:**
 
 ```bash
-VERSION=1.1.1
-curl -L -o axon.tar.gz \
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
-tar xzf axon.tar.gz && cd "axon-${VERSION}-linux-x64"
+curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-linux-x64.tar.gz
+tar xzf axon.tar.gz && cd axon-*-linux-x64
 ./install.sh /caminho/para/seu-projeto
 ```
+
+**macOS Apple Silicon:**
+
+```bash
+curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-macos-arm64.tar.gz
+tar xzf axon.tar.gz && cd axon-*-macos-arm64
+./install.sh /caminho/para/seu-projeto
+```
+
+O `install.sh` copia o binário para o PATH, instala hooks, escreve `<projeto>/.claude/settings.json`, indexa o projeto, baixa o modelo de embeddings (~80 MB) por padrão e registra o servidor MCP no Claude Code via `claude mcp add-json axon ... --scope user`. Se o CLI `claude` não estiver no PATH, ele imprime o bloco JSON para colar manualmente em `~/.claude.json`.
+
+> Para pular o download do modelo: `AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto`
 
 ### Windows x64 — Download direto
 
 ```powershell
-$VERSION = "1.1.1"
 Invoke-WebRequest `
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
+  "https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-windows-x64.zip" `
   -OutFile "axon.zip"
-Expand-Archive axon.zip -DestinationPath "axon-$VERSION-windows-x64"
-cd "axon-$VERSION-windows-x64"
+Expand-Archive axon.zip -DestinationPath axon-windows-x64
+cd axon-windows-x64
 .\install.ps1 C:\caminho\para\seu-projeto
 ```
 
@@ -581,9 +617,9 @@ $env:PATH += ";$(Resolve-Path bin)"
 
 | Plataforma | Arquivo |
 |------------|---------|
-| Linux x86-64 | `axon-X.Y.Z-linux-x64.tar.gz` |
-| macOS Apple Silicon | `axon-X.Y.Z-macos-arm64.tar.gz` |
-| Windows x64 | `axon-X.Y.Z-windows-x64.zip` |
+| Linux x86-64 | `axon-linux-x64.tar.gz` |
+| macOS Apple Silicon | `axon-macos-arm64.tar.gz` |
+| Windows x64 | `axon-windows-x64.zip` |
 
 ---
 
@@ -607,7 +643,9 @@ axon web --port=7070
 
 ## Integração com Claude Code
 
-Após o `axon-setup`, o servidor MCP já está registrado. Para configurar manualmente, adicione ao `~/.claude.json`:
+Após o `install.sh` (ou `install.ps1`), o servidor MCP já está registrado via `claude mcp add-json axon ... --scope user`. Se o CLI `claude` não estava no PATH no momento da instalação, o instalador imprime o bloco JSON para colar manualmente em `~/.claude.json`.
+
+Para configurar manualmente, adicione ao `~/.claude.json`:
 
 ```json
 {
@@ -810,13 +848,17 @@ axon serve --http --port=7070
 granularity = "symbol"   # padrão: "file" — habilita arestas no nível de chamada
 ```
 
-### Modelo de Embeddings (opcional — habilita busca semântica)
+### Modelo de Embeddings (baixado por padrão)
+
+O instalador baixa o `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB) automaticamente. Para pular:
 
 ```bash
-# Baixar modelo durante o setup
-axon-setup --download-model /caminho/para/seu-projeto
+AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto
+```
 
-# Ou apontar para um modelo existente
+Para usar seu próprio arquivo de modelo:
+
+```bash
 export AXON_EMBEDDING_MODEL=/caminho/para/nomic-embed-text-v1.5.Q4_K_M.gguf
 ```
 
@@ -865,8 +907,10 @@ Sem o modelo, todas as 26 ferramentas funcionam normalmente, exceto `search_memo
 **Nota de empacotamento:** os instaladores são gerados a partir do repositório
 fonte privado `HideakiSolutions/axon` pelo workflow
 `.github/workflows/release.yml` e publicados aqui. Este repositório é o alvo
-público de releases/artefatos. A release `v1.1.2` inclui instaladores Linux,
-macOS e Windows expondo `axon web` e `axon lsp` na CLI C++ nativa.
+público de releases/artefatos. A versão mais recente (`v1.2.3`) inclui instaladores
+Linux, macOS e Windows expondo `axon web` e `axon lsp` na CLI C++ nativa. Sempre
+baixe de [releases/latest](https://github.com/HideakiSolutions/axon-releases/releases/latest)
+para obter a versão atual sem precisar fixar um número de versão.
 
 ---
 
