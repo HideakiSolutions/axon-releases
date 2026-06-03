@@ -89,20 +89,16 @@ AXON_EMBEDDING_MODEL=/caminho/para/nomic-embed-text-v1.5.Q4_K_M.gguf
 - `get_context_capsule` usa apenas seleção de pivôs por centralidade de grafo como fallback.
 - `search_memory` retorna resultados vazios.
 
-**Modelo recomendado:** `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB). Baixe via:
+**Modelo recomendado:** `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB). O instalador (`install.sh` / `install.ps1`) o baixa automaticamente por padrão. Para pular: defina `AXON_DOWNLOAD_MODEL=0` antes de executar o instalador.
 
-```bash
-axon-setup --download-model /caminho/para/seu-projeto
-```
-
-Ou defina `AXON_DOWNLOAD_MODEL=1` para baixar automaticamente durante o setup (veja abaixo).
+Para baixar manualmente ou apontar para um arquivo existente, defina a variável diretamente (veja abaixo).
 
 ```mermaid
 flowchart TD
     A[Need semantic search?] -->|Yes| B{Model available?}
     A -->|No, graph only| C[Use without model\nget_context_capsule still works\nno semantic ranking]
     B -->|Yes, path known| D["export AXON_EMBEDDING_MODEL=/path/model.gguf\nor set in ~/.claude.json"]
-    B -->|No| E[axon-setup --download-model\ndownloads nomic-embed-text-v1.5]
+    B -->|No| E[AXON_DOWNLOAD_MODEL=0 para pular\ninstall.sh baixa por padrão]
     D --> F[✓ Semantic search enabled]
     E --> F
 ```
@@ -145,7 +141,15 @@ AXON_TELEMETRY=0
 AXON_DOWNLOAD_MODEL=1
 ```
 
-Quando definido como `1`, o `axon-setup` baixa o modelo de embeddings automaticamente sem exibir um prompt interativo. Útil para ambientes de CI ou scripts de provisionamento automatizado.
+Controla se o instalador baixa o modelo de embeddings automaticamente.
+
+| Valor | Comportamento |
+|-------|---------------|
+| (não definido) | **(Padrão)** Modelo é baixado automaticamente pelo `install.sh` / `install.ps1`. |
+| `0` | Pular download do modelo — útil quando você já tem o modelo ou em ambientes com largura de banda limitada. |
+| `1` | Baixar o modelo explicitamente (igual ao padrão; útil em scripts que definem a variável explicitamente). |
+
+Útil para ambientes de CI ou scripts de provisionamento automatizado onde você quer controlar o download explicitamente.
 
 ---
 
@@ -155,7 +159,7 @@ Quando definido como `1`, o `axon-setup` baixa o modelo de embeddings automatica
 AXON_MODEL_DIR=/caminho/para/modelos
 ```
 
-Diretório onde o `axon-setup --download-model` salva o arquivo do modelo de embeddings.
+Diretório onde o instalador salva o arquivo do modelo de embeddings quando ele é baixado automaticamente.
 
 **Padrão:** `<install-dir>/models/` (relativo ao local do binário axon).
 

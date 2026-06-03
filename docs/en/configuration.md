@@ -89,20 +89,16 @@ AXON_EMBEDDING_MODEL=/path/to/nomic-embed-text-v1.5.Q4_K_M.gguf
 - `get_context_capsule` falls back to graph-centrality-only pivot selection.
 - `search_memory` returns empty results.
 
-**Recommended model:** `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB). Download via:
+**Recommended model:** `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB). The installer (`install.sh` / `install.ps1`) downloads it automatically by default. To skip: set `AXON_DOWNLOAD_MODEL=0` before running the installer.
 
-```bash
-axon-setup --download-model /path/to/your-project
-```
-
-Or set `AXON_DOWNLOAD_MODEL=1` to download automatically during setup (see below).
+To download manually or point to an existing file, set the variable directly (see below).
 
 ```mermaid
 flowchart TD
     A[Need semantic search?] -->|Yes| B{Model available?}
     A -->|No, graph only| C[Use without model\nget_context_capsule still works\nno semantic ranking]
     B -->|Yes, path known| D["export AXON_EMBEDDING_MODEL=/path/model.gguf\nor set in ~/.claude.json"]
-    B -->|No| E[axon-setup --download-model\ndownloads nomic-embed-text-v1.5]
+    B -->|No| E[AXON_DOWNLOAD_MODEL=0 to skip\ninstall.sh downloads by default]
     D --> F[✓ Semantic search enabled]
     E --> F
 ```
@@ -145,7 +141,15 @@ AXON_TELEMETRY=0
 AXON_DOWNLOAD_MODEL=1
 ```
 
-When set to `1`, `axon-setup` downloads the embedding model automatically without displaying an interactive prompt. Useful for CI environments or automated provisioning scripts.
+Controls whether the installer downloads the embedding model automatically.
+
+| Value | Behavior |
+|-------|----------|
+| (unset) | **(Default)** Model is downloaded automatically during `install.sh` / `install.ps1`. |
+| `0` | Skip model download — useful when you already have the model or in bandwidth-constrained environments. |
+| `1` | Explicitly download the model (same as default; useful in scripts that set it explicitly). |
+
+Useful for CI environments or automated provisioning scripts where you want to control the download explicitly.
 
 ---
 
@@ -155,7 +159,7 @@ When set to `1`, `axon-setup` downloads the embedding model automatically withou
 AXON_MODEL_DIR=/path/to/models
 ```
 
-Directory where `axon-setup --download-model` saves the embedding model file.
+Directory where the installer saves the embedding model file when it is downloaded automatically.
 
 **Default:** `<install-dir>/models/` (relative to the axon binary location).
 

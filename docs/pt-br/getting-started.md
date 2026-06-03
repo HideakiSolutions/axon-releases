@@ -10,7 +10,7 @@ Este guia leva você do zero até a primeira query `get_context_capsule` no Clau
 
 | Requisito | Observações |
 |-----------|-------------|
-| **jq** | Necessário pelo `axon-setup` para manipulação de JSON. Instale com `brew install jq` (macOS) ou `apt install jq` (Debian/Ubuntu). |
+| **jq** | Necessário pelo `install.sh` para manipulação de JSON. Instale com `brew install jq` (macOS) ou `apt install jq` (Debian/Ubuntu). |
 | **git** | Necessário para `detect_changes` e registro de repositórios. Geralmente já instalado. |
 | **Sem ferramentas de build** | Não necessário | O axon é distribuído como binário pré-compilado — nenhum compilador necessário. |
 
@@ -36,35 +36,35 @@ brew tap HideakiSolutions/axon
 brew install axon
 ```
 
-Após a instalação, execute o assistente de configuração para indexar seu projeto, baixar opcionalmente o modelo de embeddings e registrar o axon no Claude Code automaticamente:
+Após a instalação, execute o script de instalação para indexar seu projeto, baixar o modelo de embeddings (~80 MB, baixado por padrão) e registrar o axon no Claude Code automaticamente:
 
 ```bash
-axon-setup /caminho/para/seu-projeto
+./install.sh /caminho/para/seu-projeto
 ```
 
-Pronto. Pule para [Primeiro Índice](#primeiro-índice) se quiser entender o que o `axon-setup` faz por baixo dos panos, ou vá direto para [Configurar o Claude Code](#configurar-o-claude-code-manualmente) se precisar de controle manual.
+O `install.sh` instala hooks, escreve `<projeto>/.claude/settings.json`, indexa o projeto, baixa o modelo de embeddings e registra o servidor MCP via `claude mcp add-json axon ... --scope user`. Se o CLI `claude` não estiver no PATH, ele imprime o bloco JSON para colar manualmente em `~/.claude.json`.
+
+> Para pular o download do modelo: `AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto`
+
+Pronto. Pule para [Primeiro Índice](#primeiro-índice) se quiser entender o que o `install.sh` faz por baixo dos panos, ou vá direto para [Configurar o Claude Code](#configurar-o-claude-code-manualmente) se precisar de controle manual.
 
 ---
 
 ### Opção 2 — Download Direto (Linux / macOS tarball)
 
-1. Encontre a versão mais recente em [GitHub Releases](https://github.com/HideakiSolutions/axon-releases/releases/latest).
+1. Acesse a **[página de Releases do GitHub](https://github.com/HideakiSolutions/axon-releases/releases/latest)** e baixe o arquivo da sua plataforma.
 
 2. Baixe e extraia:
 
 ```bash
-VERSION=1.1.1
-
 # Linux x86-64
-curl -L -o axon.tar.gz \
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-linux-x64.tar.gz"
+curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-linux-x64.tar.gz
+tar xzf axon.tar.gz
+cd axon-*-linux-x64
 
 # macOS Apple Silicon
-# curl -L -o axon.tar.gz \
-#   "https://github.com/HideakiSolutions/axon-releases/releases/download/v${VERSION}/axon-${VERSION}-macos-arm64.tar.gz"
-
-tar xzf axon.tar.gz
-cd "axon-${VERSION}-linux-x64"
+# curl -fL -o axon.tar.gz https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-macos-arm64.tar.gz
+# tar xzf axon.tar.gz && cd axon-*-macos-arm64
 ```
 
 3. Execute o instalador:
@@ -73,19 +73,18 @@ cd "axon-${VERSION}-linux-x64"
 ./install.sh /caminho/para/seu-projeto
 ```
 
-O `install.sh` copia o binário para um local no PATH, indexa o projeto e configura o `~/.claude.json` do Claude Code.
+O `install.sh` copia o binário para o PATH, instala hooks, escreve `<projeto>/.claude/settings.json`, indexa o projeto e baixa o modelo de embeddings (~80 MB) por padrão. Para pular: `AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto`.
 
 ---
 
 ### Opção 3 — Windows x64
 
 ```powershell
-$VERSION = "1.1.1"
 Invoke-WebRequest `
-  "https://github.com/HideakiSolutions/axon-releases/releases/download/v$VERSION/axon-$VERSION-windows-x64.zip" `
+  "https://github.com/HideakiSolutions/axon-releases/releases/latest/download/axon-windows-x64.zip" `
   -OutFile "axon.zip"
-Expand-Archive axon.zip -DestinationPath "axon-$VERSION-windows-x64"
-cd "axon-$VERSION-windows-x64"
+Expand-Archive axon.zip -DestinationPath axon-windows-x64
+cd axon-windows-x64
 .\install.ps1 C:\caminho\para\seu-projeto
 ```
 
@@ -99,7 +98,7 @@ $env:PATH += ";$(Resolve-Path bin)"
 
 ## Primeiro Índice
 
-Seja usando o `axon-setup` ou tendo instalado manualmente, indexar um projeto usa o mesmo comando:
+Seja usando o `install.sh` / `install.ps1` ou tendo instalado manualmente, indexar um projeto usa o mesmo comando:
 
 ```bash
 axon index /caminho/para/seu-projeto
@@ -165,7 +164,7 @@ O servidor roda em primeiro plano, escutando stdin/stdout para mensagens JSON-RP
 
 ## Configurar o Claude Code Manualmente
 
-Se o `axon-setup` não foi executado (ou se quiser verificar a configuração), adicione o seguinte ao `~/.claude.json`:
+Se o `install.sh` não foi executado (ou se quiser verificar a configuração), adicione o seguinte ao `~/.claude.json`:
 
 ```json
 {
@@ -208,13 +207,15 @@ sequenceDiagram
 
 O axon suporta um modelo de embeddings local para o modo de query semântica no `get_context_capsule` e para `search_memory`. Sem ele, todas as 26 ferramentas funcionam — o `get_context_capsule` usa apenas traversal de grafo como fallback.
 
-### Baixar o modelo automaticamente
+### Modelo é baixado automaticamente por padrão
+
+O `install.sh` baixa o modelo de embeddings automaticamente. Para pular:
 
 ```bash
-axon-setup --download-model /caminho/para/seu-projeto
+AXON_DOWNLOAD_MODEL=0 ./install.sh /caminho/para/seu-projeto
 ```
 
-### Baixar manualmente
+### Baixar manualmente ou usar seu próprio modelo
 
 O modelo recomendado é `nomic-embed-text-v1.5.Q4_K_M.gguf` (~80 MB). Após o download, configure a variável de ambiente:
 
