@@ -378,7 +378,7 @@ axon index status
 flowchart TD
     A[axon status] --> B{Index healthy?}
     B -->|files=0 or stale| C[axon index]
-    B -->|embedding_model: none| D[axon-setup --download-model\nor set AXON_EMBEDDING_MODEL]
+    B -->|embedding_model: none| D[re-run install.sh\nor set AXON_EMBEDDING_MODEL]
     B -->|errors in output| E[axon index --force]
     B -->|All green| F[axon serve ✓]
 ```
